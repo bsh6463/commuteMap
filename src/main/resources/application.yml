@@ -1,3 +1,7 @@
+odsay:
+  uri: https://api.odsay.com/v1/api/searchPubTransPathT
+  key: PGoTBdvmQu6iIlDehYKN3w
+
 spring:
   datasource:
     url: jdbc:h2:tcp://localhost/~/commuteMap
