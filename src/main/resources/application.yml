@@ -1,6 +1,6 @@
 odsay:
   uri: https://api.odsay.com/v1/api/searchPubTransPathT
-  key: Fa1c1EUOHGdzHQ16b51eiLa9G+l12/JHetKVLcphpjI
+  key: Fa1c1EUOHGdzHQ16b51eiLa9G%2Bl12%2FJHetKVLcphpjI
 
 spring:
   datasource:

@@ -23,12 +23,15 @@ public class OdSayClient {
 
    public String searchRoute(SearchRouteReq searchRouteReq){
 
-       URI uri = UriComponentsBuilder.fromUriString(routeSearchUri)
+
+       String uriString = UriComponentsBuilder.fromUriString(routeSearchUri)
                .queryParam("SX", searchRouteReq.getSX())
                .queryParam("SY", searchRouteReq.getSY())
                .queryParam("EX", searchRouteReq.getEX())
                .queryParam("EY", searchRouteReq.getEY())
-               .queryParam("apiKey", key).build().encode().toUri();
+               .queryParam("apiKey", key).build().toUriString();
+
+       URI uri = UriComponentsBuilder.fromUriString(uriString).build(true).toUri();
        log.info("[request api] uri = {}", uri);
        //Http Entity
        var httpEntity = new HttpEntity<>(new HttpHeaders());
