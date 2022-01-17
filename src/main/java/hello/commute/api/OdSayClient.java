@@ -28,9 +28,7 @@ public class OdSayClient {
                .queryParam("SY", searchRouteReq.getSY())
                .queryParam("EX", searchRouteReq.getEX())
                .queryParam("EY", searchRouteReq.getEY())
-               .queryParam("apiKey", key)
-               .build().encode().toUri();
-
+               .queryParam("apiKey", key).build().encode().toUri();
        log.info("[request api] uri = {}", uri);
        //Http Entity
        var httpEntity = new HttpEntity<>(new HttpHeaders());

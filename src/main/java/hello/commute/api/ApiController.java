@@ -15,19 +15,16 @@ public class ApiController {
 
     @GetMapping("/route")
     public String searchRoute(){
+        //서율역
         String SX ="126.9707979959352";
         String SY = "37.5547020732267";
+        //잠실역
         String EX = "127.10012275846414";
         String EY = "37.513264531390575";
-        //서율역 위도 경도,
-        //y:37.5547020732267, x:126.9707979959352
-        //잠실역
-        //y:37.513264531390575, x: 127.10012275846414
-        SearchRouteReq searchRouteReq = new SearchRouteReq(SX, SY, EX, EY);
-        String result = odSayClient.searchRoute(searchRouteReq);
 
-        System.out.println(result);
-        return result;
+        SearchRouteReq searchRouteReq = new SearchRouteReq(SX, SY, EX, EY);
+
+        return odSayClient.searchRoute(searchRouteReq);
     }
 
 
