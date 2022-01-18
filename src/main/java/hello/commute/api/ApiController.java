@@ -2,6 +2,7 @@ package hello.commute.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,8 +24,10 @@ public class ApiController {
         String EY = "37.513264531390575";
 
         SearchRouteReq searchRouteReq = new SearchRouteReq(SX, SY, EX, EY);
+        String result = odSayClient.searchRoute(searchRouteReq);
+        JSONObject jsonResult = new JSONObject(result);
 
-        return odSayClient.searchRoute(searchRouteReq);
+        return "ok";
     }
 
 
