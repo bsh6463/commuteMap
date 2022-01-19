@@ -1,11 +1,12 @@
 package hello.commute.api;
 
+import hello.commute.api.dto.SearchRouteReq;
+import hello.commute.api.dto.SearchRouteRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
@@ -26,6 +27,7 @@ public class ApiController {
         SearchRouteReq searchRouteReq = new SearchRouteReq(SX, SY, EX, EY);
         String result = odSayClient.searchRoute(searchRouteReq);
         JSONObject jsonResult = new JSONObject(result);
+        SearchRouteRes searchRouteRes = new SearchRouteRes();
 
         return "ok";
     }

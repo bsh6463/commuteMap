@@ -1,4 +1,4 @@
-package hello.commute.api;
+package hello.commute.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
