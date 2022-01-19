@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 @Getter
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class Path {
     private int payment;
     private int busTransitCount;
     private int subwayTransitCount;
-    private String mapOj;
+    private String mapObj;
     private String firstStartStation;
     private String lastEndStation;
     private int totalStationCount;
@@ -30,20 +31,20 @@ public class Path {
     private double totalDistance;
     private int totalWalkTime;
 
-    private List<SubPath> subPathList;
+    private ArrayList<SubPath> subPathList = new ArrayList<>();
     private JSONObject subPath;
 
     public Path(JSONObject path) {
-        this.info = (JSONObject) path.get("info");
+        this.pathType = (int) path.get("pathType");
 
-        this.pathType = (int) info.get("pathType");
+        this.info = (JSONObject) path.get("info");
         this.trafficDistance = (double) info.get("trafficDistance");
         this.totalWalk = (int) info.get("totalWalk");
         this.totalTime = (int) info.get("totalTime");
         this.payment = (int) info.get("payment");
         this.busTransitCount = (int) info.get("busTransitCount");
         this.subwayTransitCount = (int) info.get("subwayTransitCount");
-        this.mapOj = (String) info.get("mapOj");
+        this.mapObj = (String) info.get("mapObj");
         this.firstStartStation = (String) info.get("firstStartStation");
         this.lastEndStation = (String) info.get("lastEndStation");
         this.totalStationCount = (int) info.get("totalStationCount");

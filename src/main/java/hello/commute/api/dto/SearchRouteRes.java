@@ -14,27 +14,29 @@ import java.util.List;
 @NoArgsConstructor
 public class SearchRouteRes {
 
+    private JSONObject result;
     private int searchType;
     private int outTrafficCheck;
     private int busCount;
     private int subwayCount;
     private int subwayBusCount;
-    private double pointDistance;
+    private int pointDistance; //왜 double로안들어옴?
     private int startRadius;
     private int endRadius;
     private List<Path> pathList;
     private JSONObject path;
 
     public SearchRouteRes(JSONObject jsonResult) {
-        this.searchType = (int) jsonResult.get("searchType");
-        this.outTrafficCheck = (int) jsonResult.get("outTrafficCheck");
-        this.busCount = (int) jsonResult.get("busCount");
-        this.subwayBusCount = (int) jsonResult.get("subwayBusCount");
-        this.subwayCount = (int) jsonResult.get("subwayCount");
-        this.pointDistance = (double) jsonResult.get("pointDistance");
-        this.startRadius = (int) jsonResult.get("startRadius");
-        this.endRadius = (int) jsonResult.get("endRadius");
-        JSONArray path = jsonResult.getJSONArray("path");
+        this.result = jsonResult.getJSONObject("result");
+        this.searchType = (int) result.get("searchType");
+        this.outTrafficCheck = (int) result.get("outTrafficCheck");
+        this.busCount = (int) result.get("busCount");
+        this.subwayBusCount = (int) result.get("subwayBusCount");
+        this.subwayCount = (int) result.get("subwayCount");
+        this.pointDistance = (int) result.get("pointDistance");
+        this.startRadius = (int) result.get("startRadius");
+        this.endRadius = (int) result.get("endRadius");
+        JSONArray path = result.getJSONArray("path");
         for (int i=0; i<path.length(); i++){
             JSONObject eachPath= (JSONObject) path.get(i);
             pathList.add(new Path(eachPath));

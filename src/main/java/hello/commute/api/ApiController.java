@@ -27,7 +27,7 @@ public class ApiController {
         SearchRouteReq searchRouteReq = new SearchRouteReq(SX, SY, EX, EY);
         String result = odSayClient.searchRoute(searchRouteReq);
         JSONObject jsonResult = new JSONObject(result);
-        SearchRouteRes searchRouteRes = new SearchRouteRes();
+        SearchRouteRes searchRouteRes = new SearchRouteRes(jsonResult);
 
         return "ok";
     }
