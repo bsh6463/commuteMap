@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -31,13 +32,17 @@ public class SubPath {
     private String endName;
     private double endX;
     private double endY;
+
     private String way;
     private int wayCode;
     private String door;
+
     private int startID;
     private int endID;
+    private JSONObject passStopList;
+    private ArrayList<Station> stations;
 
-    public SubPath(JSONObject eachSubPath) {
+    public SubPath(JSONObject eachSubPath, int index) {
         this.trafficType = (int) eachSubPath.get("trafficType");
         this.distance = (int) eachSubPath.get("distance");  //왜 double로 안들어옴?
         this.sectionTime = (int) eachSubPath.get("sectionTime");
@@ -46,18 +51,35 @@ public class SubPath {
             this.stationCount = (int) eachSubPath.get("stationCount");
             this.laneJasonArray = eachSubPath.getJSONArray("lane");
             this.laneJson= (JSONObject) laneJasonArray.get(0);
-            this.lane= new Lane(laneJson);
+            this.lane= new Lane(laneJson, trafficType);
             this.startName = (String) eachSubPath.get("startName");
             this.startX = (double) eachSubPath.get("startX");
             this.startY = (double) eachSubPath.get("startY");
             this.endName = (String) eachSubPath.get("endName");
             this.endX = (double) eachSubPath.get("endX");
             this.endY = (double) eachSubPath.get("endY");
-            this.way = (String) eachSubPath.get("way");
-            this.wayCode = (int) eachSubPath.get("wayCode");
-            this.door = (String) eachSubPath.get("door");
+
+            if (trafficType == 1){
+                //지하철의 경우에만
+                this.way = (String) eachSubPath.get("way");
+                if (index==0){
+                    //지하철 첫 번 째 경로에만.
+                    this.wayCode = (int) eachSubPath.get("wayCode");
+                }
+                this.door = (String) eachSubPath.get("door");
+            }
+
             this.startID = (int) eachSubPath.get("startID");
             this.endID = (int) eachSubPath.get("endID");
+
+            this.passStopList = eachSubPath.getJSONObject("passStopList");
+            JSONArray stationList = passStopList.getJSONArray("stations");
+            stations = new ArrayList<>();
+            for (int i=0; i<stationList.length(); i++){
+                JSONObject stationJson = (JSONObject) stationList.get(i);
+                stations.add(new Station(stationJson, trafficType));
+            }
+
         }
     }
 
@@ -69,38 +91,42 @@ public class SubPath {
         private int busID;
         private int subwayCode;
         private int subwayCityCode;
-        private JSONObject passStopList;
-        private List<Station> stations;
 
-        public Lane(JSONObject landJson) {
-            this.name = (String) landJson.get("name");
-            this.busNo = (String) landJson.get("busNo");
-            this.type = (int) landJson.get("type");
-            this.busID = (int) landJson.get("busID");
-            this.subwayCode = (int) landJson.get("subwayCode");
-            this.subwayCityCode = (int) landJson.get("subwayCityCode");
-            this.passStopList = landJson.getJSONObject("passStopList");
-            JSONArray stationList = passStopList.getJSONArray("stations");
-            for (int i=0; i<stationList.length(); i++){
-                JSONObject stationJson = (JSONObject) stationList.get(i);
-                stations.add(new Station(stationJson));
+
+        public Lane(JSONObject laneJson, int trafficType) {
+            if (trafficType == 1){
+                //지하철
+                this.name = (String) laneJson.get("name");
+                this.subwayCode = (int) laneJson.get("subwayCode");
+                this.subwayCityCode = (int) laneJson.get("subwayCityCode");
+            }else if (trafficType == 2){
+                //버스
+                this.busNo = (String) laneJson.get("busNo");
+                this.type = (int) laneJson.get("type");
+                this.busID = (int) laneJson.get("busID");
             }
+
 
         }
     }
 
     public static class Station{
 
+        private int index;
         private String stationName;
         private String x;
         private String y;
         private String isNonStop;
 
-        public Station(JSONObject stationJson) {
+        public Station(JSONObject stationJson, int trafficType) {
+            this.index = (int) stationJson.get("index");
             this.stationName = (String) stationJson.get("stationName");
             this.x = (String) stationJson.get("x");
             this.y = (String) stationJson.get("y");
-            this.isNonStop = (String) stationJson.get("isNonStop");
+
+            if (trafficType == 2){
+                this.isNonStop = (String) stationJson.get("isNonStop");
+            }
 
         }
     }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -23,7 +24,7 @@ public class SearchRouteRes {
     private int pointDistance; //왜 double로안들어옴?
     private int startRadius;
     private int endRadius;
-    private List<Path> pathList;
+    private ArrayList<Path> pathList;
     private JSONObject path;
 
     public SearchRouteRes(JSONObject jsonResult) {
@@ -37,6 +38,7 @@ public class SearchRouteRes {
         this.startRadius = (int) result.get("startRadius");
         this.endRadius = (int) result.get("endRadius");
         JSONArray path = result.getJSONArray("path");
+        pathList = new ArrayList<>();
         for (int i=0; i<path.length(); i++){
             JSONObject eachPath= (JSONObject) path.get(i);
             pathList.add(new Path(eachPath));

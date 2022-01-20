@@ -56,7 +56,7 @@ public class Path {
         JSONArray subPath = path.getJSONArray("subPath");
         for (int i=0; i<subPath.length(); i++){
             JSONObject eachSubPath = (JSONObject) subPath.get(i);
-            subPathList.add(new SubPath(eachSubPath));
+            subPathList.add(new SubPath(eachSubPath, i));
         }
 
 
