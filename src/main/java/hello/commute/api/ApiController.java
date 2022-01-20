@@ -15,6 +15,11 @@ public class ApiController {
 
     private final OdSayClient odSayClient;
 
+    @GetMapping("/")
+    public String home(){
+        return "search";
+    }
+
     @GetMapping("/route")
     public String searchRoute(){
         //서율역
