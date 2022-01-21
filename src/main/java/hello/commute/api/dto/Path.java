@@ -31,7 +31,7 @@ public class Path {
     private double totalDistance;
     private int totalWalkTime;
 
-    private ArrayList<SubPath> subPathList = new ArrayList<>();
+    private ArrayList<SubPath> subPathList;
     private JSONObject subPath;
 
     public Path(JSONObject path) {
@@ -54,6 +54,7 @@ public class Path {
         this.totalWalk = (int) info.get("totalWalk");
 
         JSONArray subPath = path.getJSONArray("subPath");
+        subPathList = new ArrayList<>();
         for (int i=0; i<subPath.length(); i++){
             JSONObject eachSubPath = (JSONObject) subPath.get(i);
             subPathList.add(new SubPath(eachSubPath, i));

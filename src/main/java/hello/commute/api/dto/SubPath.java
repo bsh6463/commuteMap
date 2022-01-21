@@ -42,6 +42,7 @@ public class SubPath {
     private JSONObject passStopList;
     private ArrayList<Station> stations;
 
+
     public SubPath(JSONObject eachSubPath, int index) {
         this.trafficType = (int) eachSubPath.get("trafficType");
         this.distance = (int) eachSubPath.get("distance");  //왜 double로 안들어옴?
@@ -110,6 +111,7 @@ public class SubPath {
         }
     }
 
+    @Getter
     public static class Station{
 
         private int index;
