@@ -2,6 +2,7 @@ package hello.commute.api;
 
 import hello.commute.api.dto.SearchRouteReq;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -22,7 +23,7 @@ public class OdSayClient {
     @Value(("${odsay.uri}"))
     private String routeSearchUri;
 
-   public String searchRoute(SearchRouteReq searchRouteReq){
+   public JSONObject searchRoute(SearchRouteReq searchRouteReq){
 
 
        String uriString = UriComponentsBuilder.fromUriString(routeSearchUri)
@@ -42,7 +43,9 @@ public class OdSayClient {
         var responseEntity= new RestTemplate().exchange(
                 uri, HttpMethod.GET, httpEntity, responseType
         );
+        log.info("result class : {}", responseEntity.getBody().getClass());
 
-        return responseEntity.getBody();
+
+       return new JSONObject(responseEntity.getBody());
    }
 }

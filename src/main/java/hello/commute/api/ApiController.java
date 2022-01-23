@@ -37,9 +37,8 @@ public class ApiController {
          req.setEX("127.10012275846414");
          req.setEY("37.513264531390575");
 
-        String result = odSayClient.searchRoute(req);
         //log.info("[result] : {}", result);
-        JSONObject jsonResult = new JSONObject(result);
+        JSONObject jsonResult = odSayClient.searchRoute(req);
         SearchRouteRes searchRouteRes = new SearchRouteRes(jsonResult);
         model.addAttribute("result", searchRouteRes);
         model.addAttribute("pathList", searchRouteRes.getPathList());
