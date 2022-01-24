@@ -29,8 +29,8 @@
         </table>
     </div>
 
-    <div id="paths">
-        <div th:each="path : ${result.pathList}" class="accordion-item">
+    <div class="paths">
+        <th:block th:each="path : ${result.pathList}" class="accordion-item" th:field="${path}">
             <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                     <table>
@@ -44,35 +44,35 @@
                 </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body" th:object="${path}" th:with="subPathList=${path.subPathList}">
+                <div class="accordion-body">
                     <table class="table table-striped" >
-                        <tr th:each="subPath : ${subPathList}">
-                            <li th:text="${subPath.toString()}"></li>
+                        <th:block th:each="subPath : ${path.subPathList}">
+                            <!--li th:text="${subPath.toString()}"></li-->
                             <tr>
-                                <span th:text="${subPath?.trafficType}?:'데이터 없음'"></span>
-                                <li th:object="${subpath}"  th:if="${subPath?.trafficType} == 3" th:text="|${subPath?.sectionTime}분|">도보 이동거리</li>
+                                <!--span th:text="${subPath?.trafficType}?:'데이터 없음'"></span-->
+                                <li th:object="${subpath}"  th:if="${subPath?.trafficType} == 3" th:text="|걷기 ${subPath?.sectionTime}분|">도보 이동거리</li>
                             </tr>
                             <tr>
-                                 <span th:text="${subPath?.trafficType}?:'데이터 없음'"></span>
+                                <!--span th:text="${subPath?.trafficType}?:'데이터 없음'"></span-->
                                 <li th:object="${subpath}"  th:if="${subPath?.trafficType} == 2" th:text="|${subPath?.startName}정류장 ${subPath.lane.busNo}번 승차|">버스탑승</li>
                             </tr>
                             <tr>
-                                 <span th:text="${subPath?.trafficType}?:'데이터 없음'"></span>
+                                <!--span th:text="${subPath?.trafficType}?:'데이터 없음'"></span-->
                                 <li th:object="${subpath}"  th:if="${subPath?.trafficType} == 2" th:text="|${subPath?.endName}정류장 하차|">버스하차</li>
                             </tr>
                             <tr>
-                                 <span th:text="${subPath?.trafficType}?:'데이터 없음'"></span>
-                                <li th:object="${subpath}"  th:if="${subPath?.trafficType} == 1" th:text="|${subPath?.startName} 역 ${subPath.lane.name}호선 승차|">지하철 승차</li>
+                                <!--span th:text="${subPath?.trafficType}?:'데이터 없음'"></span-->
+                                <li th:object="${subpath}"  th:if="${subPath?.trafficType} == 1" th:text="|${subPath?.startName} ${subPath.lane.name} 승차|">지하철 승차</li>
                             </tr>
                             <tr>
-                                 <span th:text="${subPath?.trafficType}?:'데이터 없음'"></span>
+                                <!--span th:text="${subPath?.trafficType}?:'데이터 없음'"></span-->
                                 <li th:object="${subpath}"  th:if="${subPath?.trafficType} == 1" th:text="|${subPath?.endName}역 하차|">지하철 하차</li>
                             </tr>
-                        </tr>
+                        </th:block>
                     </table>
                 </div>
             </div>
-        </div>
+        </th:block>
     </div>
 </body>
 </html>

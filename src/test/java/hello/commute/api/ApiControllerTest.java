@@ -53,7 +53,7 @@ class ApiControllerTest {
         SubPath subPath = path.getSubPathList().get(0);
 
         //subPath 의 필드값을 출력.
-        System.out.println(subPath.getTrafficType());
+        System.out.println("subPath_trafficType : " + subPath.getTrafficType());
         assertThat(subPath.getTrafficType()).isEqualTo(3);
     }
 }
