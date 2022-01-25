@@ -10,7 +10,7 @@
 <H1><b>대중교통 길찾기</b></H1>
 
 <div class="search box">
-  <form action="resultPage.html" th:action th:object="${searchLocationReq}" method="post">
+  <form action="/location" th:action="@{/location}" th:object="${searchLocationReq}" method="post">
       <div class="input-group mb-3">
           <span class="input-group-text" id="basic-addon1">출발지</span>
           <input type="text" id="start" th:field="*{start}" class="form-control" placeholder="출발지" aria-label="start" aria-describedby="basic-addon1">

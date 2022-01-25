@@ -22,6 +22,12 @@ public class ApiController {
 
     @GetMapping("/")
     public String home(Model model){
+        model.addAttribute("searchRouteReq", new SearchRouteReq());
+        return "searchForm";
+    }
+
+    @GetMapping("/2")
+    public String home2(Model model){
         model.addAttribute("searchLocationReq", new SearchLocationReq());
         return "searchLocationForm";
     }
@@ -38,19 +44,29 @@ public class ApiController {
 
         SearchRouteReq searchRouteReq = new SearchRouteReq(String.valueOf(SX), String.valueOf(SY), String.valueOf(EX), String.valueOf(EY));
 
-        model = searchRoute(searchRouteReq, model);
+        model = searchRoute2(searchRouteReq, model);
 
         return "resultPage";
     }
 
     //@PostMapping("/search")
-    public Model searchRoute(@ModelAttribute("searchRouteReq") SearchRouteReq searchRouteReq, Model model){
+    public Model searchRoute2(@ModelAttribute("searchRouteReq") SearchRouteReq searchRouteReq, Model model){
         JSONObject jsonResult = odSayClient.searchRoute(searchRouteReq);
         SearchRouteRes searchRouteRes = new SearchRouteRes(jsonResult);
         model.addAttribute("result", searchRouteRes);
         model.addAttribute("pathList", searchRouteRes.getPathList());
         //result page로 이동.
         return model;
+    }
+
+    @PostMapping("/search")
+    public String searchRoute(@ModelAttribute("searchRouteReq") SearchRouteReq searchRouteReq, Model model){
+        JSONObject jsonResult = odSayClient.searchRoute(searchRouteReq);
+        SearchRouteRes searchRouteRes = new SearchRouteRes(jsonResult);
+        model.addAttribute("result", searchRouteRes);
+        model.addAttribute("pathList", searchRouteRes.getPathList());
+        //result page로 이동.
+        return "resultPage";
     }
 
 }
