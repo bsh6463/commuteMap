@@ -10,22 +10,22 @@
 <H1><b>대중교통 길찾기</b></H1>
 
 <div class="search box">
-  <form action="/search" th:action="@{/search}" th:object="${req}" method="post">
+  <form action="resultPage.html" th:action th:object="${searchRouteReq}" method="post">
       <div class="input-group mb-3">
           <span class="input-group-text" id="basic-addon1">출발지 경도</span>
-          <input type="text" th:field="${req.SX}" class="form-control" placeholder="126.9707979959352" aria-label="SX" aria-describedby="basic-addon1">
+          <input type="text" id="SX" th:field="*{SX}" class="form-control" placeholder="126.9707979959352" aria-label="SX" aria-describedby="basic-addon1">
       </div>
       <div class="input-group mb-3">
           <span class="input-group-text" id="basic-addon2">출발지 위도</span>
-          <input type="text" th:field="${req.SY}" class="form-control" placeholder="37.5547020732267" aria-label="SY" aria-describedby="basic-addon1">
+          <input type="text" id="SY" th:field="*{SY}" class="form-control" placeholder="37.5547020732267" aria-label="SY" aria-describedby="basic-addon1">
       </div>
       <div class="input-group mb-3">
           <span class="input-group-text" id="basic-addon3">도착지 경도</span>
-          <input type="text" th:field="${req.EX}" class="form-control" placeholder="127.10012275846414" aria-label="EX" aria-describedby="basic-addon1">
+          <input type="text" id="EX" th:field="*{EX}" class="form-control" placeholder="127.10012275846414" aria-label="EX" aria-describedby="basic-addon1">
       </div>
       <div class="input-group mb-3">
           <span class="input-group-text" id="basic-addon4">도착지 위도</span>
-          <input type="text" th:field="${req.EY}" class="form-control" placeholder="37.513264531390575" aria-label="EY" aria-describedby="basic-addon1">
+          <input type="text" id="EY" th:field="*{EY}" class="form-control" placeholder="37.513264531390575" aria-label="EY" aria-describedby="basic-addon1">
       </div>
       <button type="submit" class="btn btn-primary" th:onclick="">검색</button>
   </form>

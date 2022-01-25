@@ -2,6 +2,10 @@ odsay:
   uri: https://api.odsay.com/v1/api/searchPubTransPathT
   key: Fa1c1EUOHGdzHQ16b51eiLa9G%2Bl12%2FJHetKVLcphpjI
 
+google:
+  uri: https://maps.googleapis.com/maps/api/geocode/json
+  key: AIzaSyDI5ze-G_qR4uril-uYFwvFSH56UVSUqxk
+
 spring:
   datasource:
     url: jdbc:h2:tcp://localhost/~/commuteMap

@@ -1,6 +1,6 @@
 package hello.commute.api;
 
-import hello.commute.api.dto.SearchRouteReq;
+import hello.commute.api.dto.SearchLocationReq;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,25 +16,22 @@ import java.net.URI;
 
 @Slf4j
 @Component
-public class OdSayClient {
+public class GoogleClient {
 
-    @Value("${odsay.key}")
+    @Value("${google.key}")
     private String key;
-    @Value(("${odsay.uri}"))
-    private String routeSearchUri;
+    @Value(("${google.uri}"))
+    private String locationUri;
 
-   public JSONObject searchRoute(SearchRouteReq searchRouteReq){
+   public JSONObject searchLocation(String location){
 
 
-       String uriString = UriComponentsBuilder.fromUriString(routeSearchUri)
-               .queryParam("SX", searchRouteReq.getSX())
-               .queryParam("SY", searchRouteReq.getSY())
-               .queryParam("EX", searchRouteReq.getEX())
-               .queryParam("EY", searchRouteReq.getEY())
+       String uriString = UriComponentsBuilder.fromUriString(locationUri)
+               .queryParam("address", location)
                .queryParam("apiKey", key).build().toUriString();
 
        URI uri = UriComponentsBuilder.fromUriString(uriString).build(true).toUri();
-       log.info("[request odsay api] uri = {}", uri);
+       log.info("[request google api] uri = {}", uri);
        //Http Entity
        var httpEntity = new HttpEntity<>(new HttpHeaders());
        var responseType = new ParameterizedTypeReference<String>(){};
@@ -43,7 +40,7 @@ public class OdSayClient {
         var responseEntity= new RestTemplate().exchange(
                 uri, HttpMethod.GET, httpEntity, responseType
         );
-        //log.info("result class : {}", responseEntity.getBody().getClass());
+       // log.info("result class : {}", responseEntity.getBody().getClass());
 
 
        return new JSONObject(responseEntity.getBody());
