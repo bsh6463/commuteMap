@@ -20,11 +20,6 @@ public class ApiController {
     private final OdSayClient odSayClient;
     private final GoogleClient googleClient;
 
-    //@GetMapping("/")
-    public String home(Model model){
-        model.addAttribute("searchRouteReq", new SearchRouteReq());
-        return "searchForm";
-    }
 
     @GetMapping("/")
     public String home2(Model model){
@@ -37,16 +32,21 @@ public class ApiController {
         JSONObject jsonStartResult = googleClient.searchLocation(searchLocationReq.getStart());
         JSONObject jsonEndResult = googleClient.searchLocation(searchLocationReq.getEnd());
 
+        SearchRouteReq searchRouteReq = getSearchRouteReq(jsonStartResult, jsonEndResult);
+
+        model = searchRoute2(searchRouteReq, model);
+
+        return "resultPage";
+    }
+
+    private SearchRouteReq getSearchRouteReq(JSONObject jsonStartResult, JSONObject jsonEndResult) {
         double SX = (double) jsonStartResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lng");
         double SY = (double) jsonStartResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lat");
         double EX = (double) jsonEndResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lng");
         double EY = (double) jsonEndResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lat");
 
         SearchRouteReq searchRouteReq = new SearchRouteReq(String.valueOf(SX), String.valueOf(SY), String.valueOf(EX), String.valueOf(EY));
-
-        model = searchRoute2(searchRouteReq, model);
-
-        return "resultPage";
+        return searchRouteReq;
     }
 
     //@PostMapping("/search")
@@ -59,6 +59,14 @@ public class ApiController {
         return model;
     }
 
+
+    /*@GetMapping("/")
+    public String home(Model model){
+        model.addAttribute("searchRouteReq", new SearchRouteReq());
+        return "searchForm";
+    }*/
+
+    /*
     //@PostMapping("/search")
     public String searchRoute(@ModelAttribute("searchRouteReq") SearchRouteReq searchRouteReq, Model model){
         JSONObject jsonResult = odSayClient.searchRoute(searchRouteReq);
@@ -67,6 +75,6 @@ public class ApiController {
         model.addAttribute("pathList", searchRouteRes.getPathList());
         //result page로 이동.
         return "resultPage";
-    }
+    }*/
 
 }
