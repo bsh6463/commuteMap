@@ -13,6 +13,7 @@ public class SearchLocationReq {
 
     private String start;
     private String end;
+    private String middle;
 
 
     private MultiValueMap<String, String> makeQuery(){
@@ -20,8 +21,10 @@ public class SearchLocationReq {
         LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 
         start = start.replace(" ", "+");
+        middle = middle.replace(" ", "+");
         end = end.replace(" ", "+");
         map.add("start", start);
+        map.add("middle", middle);
         map.add("end", end);
 
         return map;
