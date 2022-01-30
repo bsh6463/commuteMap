@@ -13,8 +13,6 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class SubPath {
 
-    private OdSayClient odSayClient;
-
     //필수값 trafficType = 3 도보
     private int trafficType;
     private int distance;    //왜 double로 안들어옴?    
@@ -49,12 +47,10 @@ public class SubPath {
     private int leftStation;
 
 
-    @Autowired
-    public SubPath(JSONObject eachSubPath, int index, OdSayClient odSayClient) {
+    public SubPath(JSONObject eachSubPath, int index) {
         this.trafficType = (int) eachSubPath.get("trafficType");
         this.distance = (int) eachSubPath.get("distance");  //왜 double로 안들어옴?
         this.sectionTime = (int) eachSubPath.get("sectionTime");
-        this.odSayClient= odSayClient;
 
         if (trafficType != 3){
             this.stationCount = (int) eachSubPath.get("stationCount");
@@ -77,13 +73,6 @@ public class SubPath {
                     this.wayCode = (int) eachSubPath.get("wayCode");
                 }
                 this.door = (String) eachSubPath.get("door");
-            }else {
-                //버스의 경우
-                this.stationId = odSayClient.getStationId(startName, String.valueOf(startX), String.valueOf(startY));
-                SearchRealTimeStationReq searchRealTimeStationReq = new SearchRealTimeStationReq(stationId, this.lane.getBusID());
-                SearchRealTimeStationRes realTimeBusInfo = odSayClient.getRealTimeBusStation(searchRealTimeStationReq);
-                this.arrivalMin = realTimeBusInfo.getArrivalMin();
-                this.leftStation = realTimeBusInfo.getLeftStation();
             }
 
             this.startID = (int) eachSubPath.get("startID");
@@ -97,6 +86,18 @@ public class SubPath {
                 stations.add(new Station(stationJson, trafficType));
             }
 
+        }
+    }
+
+    @Autowired
+    public void getStationIdAndRealTimeInfo(OdSayClient odSayClient) {
+
+        if (this.trafficType == 2){
+            this.stationId = odSayClient.getStationId(startName, String.valueOf(startX), String.valueOf(startY));
+            SearchRealTimeStationReq searchRealTimeStationReq = new SearchRealTimeStationReq(stationId, this.lane.getBusID());
+            SearchRealTimeStationRes realTimeBusInfo = odSayClient.getRealTimeBusStation(searchRealTimeStationReq);
+            this.arrivalMin = realTimeBusInfo.getArrivalMin();
+            this.leftStation = realTimeBusInfo.getLeftStation();
         }
     }
 

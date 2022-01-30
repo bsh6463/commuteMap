@@ -60,7 +60,7 @@ public class Path {
         subPathList = new ArrayList<>();
         for (int i=0; i<subPath.length(); i++){
             JSONObject eachSubPath = (JSONObject) subPath.get(i);
-            subPathList.add(new SubPath(eachSubPath, i, odSayClient));
+            subPathList.add(new SubPath(eachSubPath, i));
         }
 
 

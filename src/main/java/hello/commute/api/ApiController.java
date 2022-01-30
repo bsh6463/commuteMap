@@ -87,15 +87,26 @@ public class ApiController {
         JSONObject jsonResult = odSayClient.searchRoute(searchRouteReq);
         SearchRouteRes searchRouteRes = new SearchRouteRes(jsonResult, odSayClient);
 
+        ArrayList<Path> pathList = getPathList(searchRouteRes);
+        //api로 얻은 pathList를 대체함.
+        searchRouteRes.setPathList(pathList);
+
+        return searchRouteRes;
+    }
+
+    private ArrayList<Path> getPathList(SearchRouteRes searchRouteRes) {
         //여러 path중 2개만 사용.
         ArrayList<Path> pathList = new ArrayList<>();
         pathList.add(searchRouteRes.getPathList().get(0));
         pathList.add(searchRouteRes.getPathList().get(1));
 
-        //api로 얻은 pathList를 대체함.
-        searchRouteRes.setPathList(pathList);
-
-        return searchRouteRes;
+        //2개의 path에 대해 realtime 정보를 가져옴.
+        for (Path path : pathList) {
+            for (SubPath subPath : path.getSubPathList()) {
+                subPath.getStationIdAndRealTimeInfo(odSayClient);
+            }
+        }
+        return pathList;
     }
 
 

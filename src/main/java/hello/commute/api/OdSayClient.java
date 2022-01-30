@@ -31,8 +31,10 @@ public class OdSayClient {
     @Value(("${odsay.realTimeStation}"))
     private String realTimeStationUri;
 
-   public JSONObject searchRoute(SearchRouteReq searchRouteReq){
+    private static int callCount;
 
+   public JSONObject searchRoute(SearchRouteReq searchRouteReq){
+        log.info("callCount : {}", ++callCount);
 
        String uriString = UriComponentsBuilder.fromUriString(routeSearchUri)
                .queryParam("SX", searchRouteReq.getSX())
@@ -58,6 +60,7 @@ public class OdSayClient {
    }
 
    public String getStationId(String stationName, String X, String Y){
+       log.info("callCount : {}", ++callCount);
 
        String uriString = UriComponentsBuilder.fromUriString(searchArsIdUri)
                .queryParam("lang", 0)
@@ -67,7 +70,7 @@ public class OdSayClient {
                .queryParam("stationClass", 1)
                .queryParam("apiKey", key).build(true).toUriString();
 
-       log.info("uri String = {}", uriString);
+       //log.info("uri String = {}", uriString);
 
        URI uri = UriComponentsBuilder.fromUriString(uriString).build(true).toUri();
        log.info("[request StationInfo api] uri = {}", uri);
@@ -91,6 +94,7 @@ public class OdSayClient {
 
 
    public SearchRealTimeStationRes getRealTimeBusStation(SearchRealTimeStationReq searchRealTimeStationReq){
+       log.info("callCount : {}", ++callCount);
 
        String uriString = UriComponentsBuilder.fromUriString(realTimeStationUri)
                .queryParam("lang", 0)
