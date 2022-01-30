@@ -25,18 +25,12 @@ public class ApiController {
     @GetMapping("/")
     public String home4(Model model){
         model.addAttribute("searchLocationReq", new SearchLocationReq());
-        return "searchLocationWithWayPointForm";
+        return "searchRouteWithRealTimeInfo";
     }
 
-    /*
-    @GetMapping("/")
-    public String home2(Model model){
-        model.addAttribute("searchLocationReq", new SearchLocationReq());
-        return "searchLocationForm";
-    }*/
 
-    @PostMapping("/With-WayPoint")
-    public String searchLocation2(@ModelAttribute SearchLocationReq searchLocationReq, Model model){
+    @PostMapping("/With-realTimeInfo")
+    public String searchRoute3(@ModelAttribute SearchLocationReq searchLocationReq, Model model){
 
         //이름 --> 좌표
         JSONObject jsonStartResult = googleClient.searchLocation(searchLocationReq.getStart());
@@ -58,7 +52,69 @@ public class ApiController {
         model.addAttribute("middle", searchLocationReq.getMiddle());
         model.addAttribute("end", searchLocationReq.getEnd());
 
+        return "resultPage3";
+    }
+
+
+    @PostMapping("/With-WayPoint")
+    public String searchLocation2(@ModelAttribute SearchLocationReq searchLocationReq, Model model){
+
+        //이름 --> 좌표
+        JSONObject jsonStartResult = googleClient.searchLocation(searchLocationReq.getStart());
+        JSONObject jsonMiddleResult = googleClient.searchLocation(searchLocationReq.getMiddle());
+        JSONObject jsonEndResult = googleClient.searchLocation(searchLocationReq.getEnd());
+
+
+        //시작 -> 경유, 경유 -> 시작 길찾기 req 객체 생성
+        SearchRouteReq searchRouteReq1 = getSearchRouteReq(jsonStartResult, jsonMiddleResult);
+        SearchRouteReq searchRouteReq2 = getSearchRouteReq(jsonMiddleResult, jsonEndResult);
+
+        //res객체
+        SearchRouteRes searchRouteRes1 = searchRoute3(searchRouteReq1);
+        SearchRouteRes searchRouteRes2 = searchRoute3(searchRouteReq2);
+
+        //view에 전달.
+        model.addAttribute("result1",  searchRouteRes1);
+        model.addAttribute("result2",  searchRouteRes2);
+        model.addAttribute("start", searchLocationReq.getStart());
+        model.addAttribute("middle", searchLocationReq.getMiddle());
+        model.addAttribute("end", searchLocationReq.getEnd());
+
         return "resultPage2";
+    }
+
+    public  SearchRouteRes searchRoute3(@ModelAttribute("searchRouteReq") SearchRouteReq searchRouteReq){
+        JSONObject jsonResult = odSayClient.searchRoute(searchRouteReq);
+        SearchRouteRes searchRouteRes = new SearchRouteRes(jsonResult, odSayClient);
+
+        //여러 path중 2개만 사용.
+        ArrayList<Path> pathList = new ArrayList<>();
+        pathList.add(searchRouteRes.getPathList().get(0));
+        pathList.add(searchRouteRes.getPathList().get(1));
+
+        //api로 얻은 pathList를 대체함.
+        searchRouteRes.setPathList(pathList);
+
+        return searchRouteRes;
+    }
+
+
+    private SearchRouteReq getSearchRouteReq(JSONObject jsonStartResult, JSONObject jsonEndResult) {
+        double SX = (double) jsonStartResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lng");
+        double SY = (double) jsonStartResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lat");
+        double EX = (double) jsonEndResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lng");
+        double EY = (double) jsonEndResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lat");
+
+        SearchRouteReq searchRouteReq = new SearchRouteReq(String.valueOf(SX), String.valueOf(SY), String.valueOf(EX), String.valueOf(EY));
+        return searchRouteReq;
+    }
+
+
+    /*
+    @GetMapping("/")
+    public String home2(Model model){
+        model.addAttribute("searchLocationReq", new SearchLocationReq());
+        return "searchLocationForm";
     }
 
     @PostMapping("/By-locationName")
@@ -72,21 +128,6 @@ public class ApiController {
         return "resultPage";
     }
 
-
-    //@PostMapping("/search")
-    public  SearchRouteRes searchRoute3(@ModelAttribute("searchRouteReq") SearchRouteReq searchRouteReq){
-        JSONObject jsonResult = odSayClient.searchRoute(searchRouteReq);
-        SearchRouteRes searchRouteRes = new SearchRouteRes(jsonResult);
-
-        ArrayList<Path> pathList = new ArrayList<>();
-        pathList.add(searchRouteRes.getPathList().get(0));
-        pathList.add(searchRouteRes.getPathList().get(1));
-
-        searchRouteRes.setPathList(pathList);
-
-        return searchRouteRes;
-    }
-
     //@PostMapping("/search")
     public Model searchRoute2(@ModelAttribute("searchRouteReq") SearchRouteReq searchRouteReq, Model model){
         JSONObject jsonResult = odSayClient.searchRoute(searchRouteReq);
@@ -95,17 +136,7 @@ public class ApiController {
         model.addAttribute("pathList", searchRouteRes.getPathList());
         //result page로 이동.
         return model;
-    }
-
-    private SearchRouteReq getSearchRouteReq(JSONObject jsonStartResult, JSONObject jsonEndResult) {
-        double SX = (double) jsonStartResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lng");
-        double SY = (double) jsonStartResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lat");
-        double EX = (double) jsonEndResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lng");
-        double EY = (double) jsonEndResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lat");
-
-        SearchRouteReq searchRouteReq = new SearchRouteReq(String.valueOf(SX), String.valueOf(SY), String.valueOf(EX), String.valueOf(EY));
-        return searchRouteReq;
-    }
+    }*/
 
 
     /*@GetMapping("/")

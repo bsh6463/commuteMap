@@ -1,6 +1,8 @@
 odsay:
   uri: https://api.odsay.com/v1/api/searchPubTransPathT
   key: Fa1c1EUOHGdzHQ16b51eiLa9G%2Bl12%2FJHetKVLcphpjI
+  arsId: https://api.odsay.com/v1/api/searchStation
+  realTimeStation: https://api.odsay.com/v1/api/realtimeStation
 
 google:
   uri: https://maps.googleapis.com/maps/api/geocode/json

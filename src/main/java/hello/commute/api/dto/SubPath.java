@@ -1,18 +1,19 @@
 package hello.commute.api.dto;
 
-import lombok.AllArgsConstructor;
+import hello.commute.api.OdSayClient;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class SubPath {
+
+    private OdSayClient odSayClient;
 
     //필수값 trafficType = 3 도보
     private int trafficType;
@@ -32,6 +33,7 @@ public class SubPath {
     private String endName;
     private double endX;
     private double endY;
+    private String stationId;
 
     private String way;
     private int wayCode;
@@ -42,11 +44,17 @@ public class SubPath {
     private JSONObject passStopList;
     private ArrayList<Station> stations;
 
+    //실시간 도착정보
+    private int arrivalMin;
+    private int leftStation;
 
-    public SubPath(JSONObject eachSubPath, int index) {
+
+    @Autowired
+    public SubPath(JSONObject eachSubPath, int index, OdSayClient odSayClient) {
         this.trafficType = (int) eachSubPath.get("trafficType");
         this.distance = (int) eachSubPath.get("distance");  //왜 double로 안들어옴?
         this.sectionTime = (int) eachSubPath.get("sectionTime");
+        this.odSayClient= odSayClient;
 
         if (trafficType != 3){
             this.stationCount = (int) eachSubPath.get("stationCount");
@@ -56,6 +64,7 @@ public class SubPath {
             this.startName = (String) eachSubPath.get("startName");
             this.startX = (double) eachSubPath.get("startX");
             this.startY = (double) eachSubPath.get("startY");
+
             this.endName = (String) eachSubPath.get("endName");
             this.endX = (double) eachSubPath.get("endX");
             this.endY = (double) eachSubPath.get("endY");
@@ -68,6 +77,13 @@ public class SubPath {
                     this.wayCode = (int) eachSubPath.get("wayCode");
                 }
                 this.door = (String) eachSubPath.get("door");
+            }else {
+                //버스의 경우
+                this.stationId = odSayClient.getStationId(startName, String.valueOf(startX), String.valueOf(startY));
+                SearchRealTimeStationReq searchRealTimeStationReq = new SearchRealTimeStationReq(stationId, this.lane.getBusID());
+                SearchRealTimeStationRes realTimeBusInfo = odSayClient.getRealTimeBusStation(searchRealTimeStationReq);
+                this.arrivalMin = realTimeBusInfo.getArrivalMin();
+                this.leftStation = realTimeBusInfo.getLeftStation();
             }
 
             this.startID = (int) eachSubPath.get("startID");
@@ -80,7 +96,6 @@ public class SubPath {
                 JSONObject stationJson = (JSONObject) stationList.get(i);
                 stations.add(new Station(stationJson, trafficType));
             }
-
 
         }
     }

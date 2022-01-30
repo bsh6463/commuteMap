@@ -1,21 +1,20 @@
 package hello.commute.api.dto;
 
+import hello.commute.api.OdSayClient;
 import hello.commute.api.dto.Path;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class SearchRouteRes {
 
+    private OdSayClient odSayClient;
     private JSONObject result;
     private int searchType;
     private int outTrafficCheck;
@@ -28,7 +27,8 @@ public class SearchRouteRes {
     private ArrayList<Path> pathList;
     private JSONObject path;
 
-    public SearchRouteRes(JSONObject jsonResult) {
+    @Autowired
+    public SearchRouteRes(JSONObject jsonResult, OdSayClient odSayClient) {
         this.result = jsonResult.getJSONObject("result");
         this.searchType = (int) result.get("searchType");
         this.outTrafficCheck = (int) result.get("outTrafficCheck");
@@ -42,7 +42,7 @@ public class SearchRouteRes {
         pathList = new ArrayList<>();
         for (int i=0; i<path.length(); i++){
             JSONObject eachPath= (JSONObject) path.get(i);
-            pathList.add(new Path(eachPath));
+            pathList.add(new Path(eachPath, odSayClient));
         }
     }
 }

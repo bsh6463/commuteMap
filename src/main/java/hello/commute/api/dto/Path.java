@@ -1,16 +1,19 @@
 package hello.commute.api.dto;
 
+import hello.commute.api.OdSayClient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class Path {
 
     private int pathType;
@@ -34,7 +37,7 @@ public class Path {
     private ArrayList<SubPath> subPathList;
     private JSONObject subPath;
 
-    public Path(JSONObject path) {
+    public Path(JSONObject path, OdSayClient odSayClient) {
         this.pathType = (int) path.get("pathType");
 
         this.info = (JSONObject) path.get("info");
@@ -57,7 +60,7 @@ public class Path {
         subPathList = new ArrayList<>();
         for (int i=0; i<subPath.length(); i++){
             JSONObject eachSubPath = (JSONObject) subPath.get(i);
-            subPathList.add(new SubPath(eachSubPath, i));
+            subPathList.add(new SubPath(eachSubPath, i, odSayClient));
         }
 
 

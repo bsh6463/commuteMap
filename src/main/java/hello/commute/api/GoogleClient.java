@@ -31,6 +31,7 @@ public class GoogleClient {
                .queryParam("key", key).build().toUriString();
 
        URI uri = UriComponentsBuilder.fromUriString(uriString).build().toUri();
+
        log.info("[request google api] uri = {}", uri);
        //Http Entity
        var httpEntity = new HttpEntity<>(new HttpHeaders());
