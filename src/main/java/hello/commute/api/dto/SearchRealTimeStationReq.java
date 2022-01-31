@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class SearchRealTimeStationReq {
 
-    private String arsId;
+    private String stationId;
     private int busNumber;
 
 }

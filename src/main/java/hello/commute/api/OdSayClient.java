@@ -98,7 +98,7 @@ public class OdSayClient {
 
        String uriString = UriComponentsBuilder.fromUriString(realTimeStationUri)
                .queryParam("lang", 0)
-               .queryParam("stationID", searchRealTimeStationReq.getArsId())
+               .queryParam("stationID", searchRealTimeStationReq.getStationId())
                .queryParam("routeIDs", searchRealTimeStationReq.getBusNumber()).encode()
                .queryParam("apiKey", key).build(true).toUriString();
 

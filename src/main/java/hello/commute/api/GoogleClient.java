@@ -25,7 +25,6 @@ public class GoogleClient {
 
    public JSONObject searchLocation(String location){
 
-
        String uriString = UriComponentsBuilder.fromUriString(locationUri)
                .queryParam("address", location)
                .queryParam("key", key).build().toUriString();

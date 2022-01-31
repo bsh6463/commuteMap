@@ -32,6 +32,34 @@ public class ApiController {
     @PostMapping("/With-realTimeInfo")
     public String searchRoute3(@ModelAttribute SearchLocationReq searchLocationReq, Model model){
 
+        if (searchLocationReq.getMiddle().isEmpty()){
+            searchRouteWithoutWayPoint(searchLocationReq, model);
+            return "resultPage3-1";
+        }else{
+            searchRouteWithWayPoint(searchLocationReq, model);
+            return "resultPage3";
+        }
+
+    }
+
+    private void searchRouteWithoutWayPoint(@ModelAttribute SearchLocationReq searchLocationReq, Model model) {
+        //이름 --> 좌표
+        JSONObject jsonStartResult = googleClient.searchLocation(searchLocationReq.getStart());
+        JSONObject jsonEndResult = googleClient.searchLocation(searchLocationReq.getEnd());
+
+        //시작 -> 경유, 경유 -> 시작 길찾기 req 객체 생성
+        SearchRouteReq searchRouteReq = getSearchRouteReq(jsonStartResult, jsonEndResult);
+
+        //res객체
+        SearchRouteRes searchRouteRes = searchRoute3(searchRouteReq);
+
+        //view에 전달.
+        model.addAttribute("result1", searchRouteRes);
+        model.addAttribute("start", searchLocationReq.getStart());
+        model.addAttribute("end", searchLocationReq.getEnd());
+    }
+
+    private void searchRouteWithWayPoint(@ModelAttribute SearchLocationReq searchLocationReq, Model model) {
         //이름 --> 좌표
         JSONObject jsonStartResult = googleClient.searchLocation(searchLocationReq.getStart());
         JSONObject jsonMiddleResult = googleClient.searchLocation(searchLocationReq.getMiddle());
@@ -46,13 +74,11 @@ public class ApiController {
         SearchRouteRes searchRouteRes2 = searchRoute3(searchRouteReq2);
 
         //view에 전달.
-        model.addAttribute("result1",  searchRouteRes1);
-        model.addAttribute("result2",  searchRouteRes2);
+        model.addAttribute("result1", searchRouteRes1);
+        model.addAttribute("result2", searchRouteRes2);
         model.addAttribute("start", searchLocationReq.getStart());
         model.addAttribute("middle", searchLocationReq.getMiddle());
         model.addAttribute("end", searchLocationReq.getEnd());
-
-        return "resultPage3";
     }
 
 
@@ -85,6 +111,8 @@ public class ApiController {
 
     public  SearchRouteRes searchRoute3(@ModelAttribute("searchRouteReq") SearchRouteReq searchRouteReq){
         JSONObject jsonResult = odSayClient.searchRoute(searchRouteReq);
+
+
         SearchRouteRes searchRouteRes = new SearchRouteRes(jsonResult, odSayClient);
 
         ArrayList<Path> pathList = getPathList(searchRouteRes);
