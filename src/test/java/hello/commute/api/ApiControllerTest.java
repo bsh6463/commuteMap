@@ -1,35 +1,29 @@
 package hello.commute.api;
 
+import hello.commute.api.client.OdSayClient;
 import hello.commute.api.dto.Path;
 import hello.commute.api.dto.SearchRouteRes;
 import hello.commute.api.dto.SubPath;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class ApiControllerTest {
 
-    @Autowired OdSayClient odSayClient;
+    @Autowired
+    OdSayClient odSayClient;
     @Autowired MockMvc mockMvc;
 
     @Test
@@ -56,4 +50,6 @@ class ApiControllerTest {
         System.out.println("subPath_trafficType : " + subPath.getTrafficType());
         assertThat(subPath.getTrafficType()).isEqualTo(3);
     }
+
+
 }

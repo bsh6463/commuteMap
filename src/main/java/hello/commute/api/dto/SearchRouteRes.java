@@ -1,14 +1,12 @@
 package hello.commute.api.dto;
 
-import hello.commute.api.OdSayClient;
-import hello.commute.api.dto.Path;
+import hello.commute.api.client.OdSayClient;
 import lombok.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @RequiredArgsConstructor

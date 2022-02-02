@@ -1,7 +1,8 @@
-package hello.commute.api.dto;
+package hello.commute.api;
 
-import hello.commute.api.GoogleClient;
-import hello.commute.api.OdSayClient;
+import hello.commute.api.client.GoogleClient;
+import hello.commute.api.client.OdSayClient;
+import hello.commute.api.dto.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;

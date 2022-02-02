@@ -1,16 +1,15 @@
 package hello.commute.api;
 
+import hello.commute.api.client.GoogleClient;
+import hello.commute.api.client.OdSayClient;
 import hello.commute.api.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
 
 @Slf4j
 @Controller

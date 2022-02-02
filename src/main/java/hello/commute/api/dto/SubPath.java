@@ -1,6 +1,6 @@
 package hello.commute.api.dto;
 
-import hello.commute.api.OdSayClient;
+import hello.commute.api.client.OdSayClient;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;

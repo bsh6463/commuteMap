@@ -1,4 +1,4 @@
-package hello.commute.api;
+package hello.commute.api.client;
 
 import hello.commute.api.dto.SearchLocationReq;
 import lombok.extern.slf4j.Slf4j;

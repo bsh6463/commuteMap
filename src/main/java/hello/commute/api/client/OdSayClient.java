@@ -1,4 +1,4 @@
-package hello.commute.api;
+package hello.commute.api.client;
 
 import hello.commute.api.dto.SearchRealTimeStationReq;
 import hello.commute.api.dto.SearchRealTimeStationRes;
@@ -24,6 +24,11 @@ public class OdSayClient {
 
     @Value("${odsay.key}")
     private String key;
+
+    public void changeKey(String key) {
+        this.key = key;
+    }
+
     @Value(("${odsay.uri}"))
     private String routeSearchUri;
     @Value(("${odsay.arsId}"))
@@ -50,16 +55,17 @@ public class OdSayClient {
        var responseType = new ParameterizedTypeReference<String>(){};
 
        //ResponseEntity
-        var responseEntity= new RestTemplate().exchange(
-                uri, HttpMethod.GET, httpEntity, responseType
-        );
+       var responseEntity= new RestTemplate().exchange(
+               uri, HttpMethod.GET, httpEntity, responseType
+       );
         //log.info("result class : {}", responseEntity.getBody().getClass());
 
-
-       return new JSONObject(responseEntity.getBody());
+       JSONObject jsonResult = new JSONObject(responseEntity.getBody());
+       errorCheck(jsonResult);
+       return jsonResult;
    }
 
-   public String getStationId(String stationName, String X, String Y){
+    public String getStationId(String stationName, String X, String Y){
        log.info("callCount : {}", ++callCount);
 
        String uriString = UriComponentsBuilder.fromUriString(searchArsIdUri)
@@ -86,6 +92,8 @@ public class OdSayClient {
        //log.info("result class : {}", responseEntity.getBody().getClass());
 
        JSONObject jsonResult = new JSONObject(responseEntity.getBody());
+       errorCheck(jsonResult);
+
        int stationIdInt = (int) jsonResult.getJSONObject("result").getJSONArray("station").getJSONObject(0).get("stationID");
        String stationId = String.valueOf(stationIdInt);
        stationId = stationId.replace("-", "");
@@ -116,7 +124,26 @@ public class OdSayClient {
        //log.info("result class : {}", responseEntity.getBody().getClass());
 
        JSONObject jsonResult = new JSONObject(responseEntity.getBody());
+       errorCheck(jsonResult);
 
        return new SearchRealTimeStationRes(jsonResult);
    }
+
+    private void errorCheck(JSONObject jsonResult) {
+        //error체크
+        if (!jsonResult.getJSONArray("error").isEmpty()){
+            JSONObject jsonErrorInfo = jsonResult.getJSONArray("error").getJSONObject(0);
+            String errorCode = (String) jsonErrorInfo.get("code");
+            String message = (String) jsonErrorInfo.get("message");
+            log.info("[ODsay Error] errorCode: {}", errorCode);
+            log.info("[ODsay Error] errorMessage: {}", message);
+
+            if (errorCode.equals("500")){
+                throw new IllegalStateException(message);
+            }else {
+                throw new IllegalArgumentException(message);
+            }
+
+        }
+    }
 }
