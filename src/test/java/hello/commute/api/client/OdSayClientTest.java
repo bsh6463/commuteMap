@@ -1,6 +1,7 @@
 package hello.commute.api.client;
 
 
+import hello.commute.api.dto.SearchRealTimeStationReq;
 import hello.commute.api.dto.SearchRouteReq;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -34,6 +35,24 @@ class OdSayClientTest {
         SearchRouteReq searchRouteReq = new SearchRouteReq("126.9707979959352", "37.5547020732267", "127.10012275846414", "37.513264531390575");
         Assertions.assertThrows(IllegalStateException.class, () ->{
             odSayClient.searchRoute(searchRouteReq);
+        });
+    }
+
+    @Test
+    @DisplayName("send wrong key: RealTime Info")
+    void wrongKey_realTimeInfo(){
+        odSayClient.changeKey("wrongKey");
+        SearchRealTimeStationReq searchRealTimeStationReq = new SearchRealTimeStationReq("102155", 1210);
+        Assertions.assertThrows(IllegalStateException.class, () ->{
+            odSayClient.getRealTimeBusStation(searchRealTimeStationReq);
+        });
+    }
+
+   //@Test
+    @DisplayName("send Empty Data : getStationId")
+    void emptyData_getStationId(){
+        Assertions.assertThrows(IllegalArgumentException.class, () ->{
+            odSayClient.getStationId("", "126.9707979959352","37.5547020732267");
         });
     }
 }

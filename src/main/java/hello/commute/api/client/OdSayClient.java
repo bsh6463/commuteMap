@@ -131,14 +131,14 @@ public class OdSayClient {
 
     private void errorCheck(JSONObject jsonResult) {
         //error체크
-        if (!jsonResult.getJSONArray("error").isEmpty()){
+        if (!jsonResult.isNull("error")){
             JSONObject jsonErrorInfo = jsonResult.getJSONArray("error").getJSONObject(0);
             String errorCode = (String) jsonErrorInfo.get("code");
             String message = (String) jsonErrorInfo.get("message");
             log.info("[ODsay Error] errorCode: {}", errorCode);
             log.info("[ODsay Error] errorMessage: {}", message);
 
-            if (errorCode.equals("500")){
+            if (errorCode.equals("500") ||errorCode.equals("-1")){
                 throw new IllegalStateException(message);
             }else {
                 throw new IllegalArgumentException(message);
