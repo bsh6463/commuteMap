@@ -4,6 +4,7 @@ import hello.commute.api.dto.SearchRealTimeStationReq;
 import hello.commute.api.dto.SearchRealTimeStationRes;
 import hello.commute.api.dto.SearchRouteReq;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -29,6 +30,7 @@ public class OdSayClient {
         this.key = key;
     }
 
+
     @Value(("${odsay.uri}"))
     private String routeSearchUri;
     @Value(("${odsay.arsId}"))
@@ -37,6 +39,8 @@ public class OdSayClient {
     private String realTimeStationUri;
 
     private static int callCount;
+    private String message;
+    private String errorCode;
 
    public JSONObject searchRoute(SearchRouteReq searchRouteReq){
         log.info("callCount : {}", ++callCount);
@@ -130,20 +134,47 @@ public class OdSayClient {
    }
 
     private void errorCheck(JSONObject jsonResult) {
+       if (jsonResult.isNull("result")){
+           errorMessageType1(jsonResult);
+       }else{
+          errorMessageType2(jsonResult);
+       }
+    }
+
+    private void errorMessageType1(JSONObject jsonResult) {
         //error체크
         if (!jsonResult.isNull("error")){
-            JSONObject jsonErrorInfo = jsonResult.getJSONArray("error").getJSONObject(0);
-            String errorCode = (String) jsonErrorInfo.get("code");
-            String message = (String) jsonErrorInfo.get("message");
-            log.info("[ODsay Error] errorCode: {}", errorCode);
-            log.info("[ODsay Error] errorMessage: {}", message);
 
-            if (errorCode.equals("500") ||errorCode.equals("-1")){
-                throw new IllegalStateException(message);
-            }else {
-                throw new IllegalArgumentException(message);
+            if (jsonResult.getJSONArray("error").isEmpty()){
+                log.info("[ODsay Error] errorCode: 500");
+                throw new IllegalStateException("예상치 못한 에러가 발생했습니다.");
             }
+            JSONArray jsonErrorArray = jsonResult.getJSONArray("error");
+            for (int i=0; i<jsonErrorArray.length(); i++){
+                JSONObject jsonErrorInfo = jsonErrorArray.getJSONObject(0);
+                errorCode = (String) jsonErrorInfo.get("code");
+                message = (String) jsonErrorInfo.get("message");
+                log.info("[ODsay Error] errorCode: {}", errorCode);
+                log.info("[ODsay Error] errorMessage: {}", message);
 
+                if (errorCode.equals("500") ||errorCode.equals("-1")){
+                    throw new IllegalStateException(message);
+                }
+            }
+                throw new IllegalArgumentException(message);
+        }
+    }
+
+    private void errorMessageType2(JSONObject jsonResult) {
+        JSONObject abnormalErrorInfo = jsonResult.getJSONObject("result").getJSONObject("error");
+        message = (String) abnormalErrorInfo.get("msg");
+        errorCode = (String) abnormalErrorInfo.get("code");
+        log.info("[ODsay Error] errorCode: {}", errorCode);
+        log.info("[ODsay Error] errorMessage: {}", message);
+        if(errorCode.equals("null")){
+            throw new IllegalStateException(message);
+        }else {
+            throw new IllegalArgumentException(message);
         }
     }
 }

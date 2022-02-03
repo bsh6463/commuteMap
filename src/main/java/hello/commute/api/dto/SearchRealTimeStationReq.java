@@ -8,6 +8,6 @@ import lombok.Data;
 public class SearchRealTimeStationReq {
 
     private String stationId;
-    private int busNumber;
+    private Integer busNumber;
 
 }
