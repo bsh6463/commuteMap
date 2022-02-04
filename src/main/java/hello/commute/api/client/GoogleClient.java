@@ -7,15 +7,14 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.NoResultException;
 import java.net.URI;
-import java.util.Objects;
 
 @Slf4j
 @Component
@@ -26,11 +25,13 @@ public class GoogleClient {
     @Value(("${google.uri}"))
     private String locationUri;
     private JSONObject jsonResult;
+
     public void changeKey(String key) {
         this.key = key;
     }
 
     public JSONObject searchLocation(String location) {
+        String status="";
 
        String uriString = UriComponentsBuilder.fromUriString(locationUri)
                .queryParam("address", location)
@@ -49,21 +50,22 @@ public class GoogleClient {
                     uri, HttpMethod.GET, httpEntity, responseType
             );
             jsonResult = new JSONObject(responseEntity.getBody());
-        }catch (HttpClientErrorException.BadRequest exception){
-            log.info("[Google Client] IllegalArgsException");
-            throw  new IllegalArgumentException(exception.getMessage());
+            status = (String) jsonResult.get("status");
+            if (!status.equals("OK")){
+                errorCheck(jsonResult, status);
+            }
+        }catch (HttpClientErrorException.BadRequest | HttpServerErrorException.InternalServerError exception){
+            log.info("[Google Client] Exception 발생: {}", exception.getMessage());
+            JSONObject errorInfo = new JSONObject(exception.getResponseBodyAsString());
+            errorCheck(errorInfo, exception.getStatusCode().name());
         }
 
-        String status = (String) jsonResult.get("status");
-
-        return errorCheckAndReturnJsonResult(jsonResult, status);
+        return jsonResult;
 
     }
 
-    private JSONObject errorCheckAndReturnJsonResult(JSONObject jsonResult, String status) {
-        if (status.equals("OK")){
-            return jsonResult;
-        }else if ( status.equals("UNKNOWN_ERROR")){
+    private void errorCheck(JSONObject jsonResult, String status) {
+        if ( status.equals("UNKNOWN_ERROR")){
             String errorMessage = (String) jsonResult.get("error_message");
             log.info("[Google Client Error] Status: {}", status);
             log.info("[Google Client Error] errorMessage: {}", errorMessage);

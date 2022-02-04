@@ -10,14 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.NoResultException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class GoogleClientTest {
     @Value("${google.key}")
     private String key;
-    @Value(("${google.uri}"))
-    private String locationUri;
+
     @Autowired
     GoogleClient googleClient;
 
