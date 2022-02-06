@@ -6,25 +6,45 @@
     <meta charset="UTF-8">
     <title>Find Route</title>
 </head>
+<style>
+    .fieldError {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+</style>
 <body>
 <H1><b>대중교통 길찾기</b></H1>
 
 <div class="search box">
-  <form action="/With-realTimeInfo" th:action="@{/With-realTimeInfo}" th:object="${searchLocationReq}" method="post">
-      <div class="input-group mb-3">
-          <span class="input-group-text" id="basic-addon1">출발지</span>
-          <input type="text" id="start" th:field="*{start}" class="form-control" placeholder="출발지" aria-label="start" aria-describedby="basic-addon1">
-      </div>
-      <div class="input-group mb-3">
-          <span class="input-group-text" id="basic-addon2">경유지</span>
-          <input type="text" id="wayPoint" th:field="*{middle}" class="form-control" placeholder="경유지" aria-label="start" aria-describedby="basic-addon1">
-      </div>
-      <div class="input-group mb-3">
-          <span class="input-group-text" id="basic-addon3">목적지</span>
-          <input type="text" id="end" th:field="*{end}" class="form-control" placeholder="목적지" aria-label="end" aria-describedby="basic-addon1">
-      </div>
-      <button type="submit" class="btn btn-primary" th:onclick="">검색</button>
-  </form>
+<div class="container" style="max-width: 600px">
+    <form action="/With-realTimeInfo" th:action="@{/With-realTimeInfo}" th:object="${searchLocationReq}" method="post">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">출발지</span>
+            <input type="text" id="start" th:field="*{start}" class="form-control" placeholder="출발지" aria-label="start" aria-describedby="basic-addon1"
+                   th:class="${errors?.containsKey('start')} ? 'fieldError' : 'form-control'">
+            <div th:if="${errors?.containsKey('start')}" th:text="${errors['start']}"
+                 th:class="${errors?.containsKey('start')} ? 'fieldError' : 'form-control'">
+                출발지 입력 오류
+            </div>
+
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon2">경유지</span>
+            <input type="text" id="wayPoint" th:field="*{middle}" class="form-control" placeholder="경유지" aria-label="start" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon3">목적지</span>
+            <input type="text" id="end" th:field="*{end}" class="form-control" placeholder="목적지" aria-label="end" aria-describedby="basic-addon1"
+                   th:class="${errors?.containsKey('end')} ? 'fieldError' : 'form-control'">
+
+            <div th:if="${errors?.containsKey('end')}" th:text="${errors['end']}"
+                 th:class="${errors?.containsKey('end')} ? 'fieldError' : 'form-control'">
+                목적지 입력 오류
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" th:onclick="">검색</button>
+    </form>
+</div>
 </div>
 
 </body>

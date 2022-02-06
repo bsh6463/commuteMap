@@ -66,11 +66,12 @@ public class SubPath {
             this.endY = (double) eachSubPath.get("endY");
 
             if (trafficType == 1){
-                //지하철의 경우에만
+                //지하철의 경우에만, 방면정보
                 this.way = (String) eachSubPath.get("way");
                 if (index==0){
-                    //지하철 첫 번 째 경로에만.
+                    //지하철 첫 번 째 경로에만.waycode : 1(상행), 2(하행)
                     this.wayCode = (int) eachSubPath.get("wayCode");
+
                 }
                 this.door = (String) eachSubPath.get("door");
             }
