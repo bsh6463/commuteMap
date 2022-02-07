@@ -9,6 +9,9 @@ google:
   uri: https://maps.googleapis.com/maps/api/geocode/json
   key: AIzaSyDI5ze-G_qR4uril-uYFwvFSH56UVSUqxk
 
+seoul:
+  uri: http://swopenAPI.seoul.go.kr/api/subway/634d57594162736837397a416d5656/json/realtimeStationArrival/0/2/
+
 spring:
   datasource:
     url: jdbc:h2:tcp://localhost/~/commuteMap
