@@ -48,9 +48,11 @@ public class ApiController {
     public Map<String, String> fieldValidation(SearchLocationReq searchLocationReq){
         if (searchLocationReq.getStart().isEmpty()){
             log.info("[ApiController] form 입력값 오류 발생");
-            log.info("[ApiController] 'searchLocationReq'is empty" );
+            log.info("[ApiController] 'start'is empty" );
             errors.put("start", "'출발지'는 필수 값 입니다.");
-        }else if (searchLocationReq.getEnd().isEmpty()){
+        }
+
+        if (searchLocationReq.getEnd().isEmpty()){
             log.info("[ApiController] form 입력값 오류 발생");
             log.info("[ApiController] 'End'is empty");
             errors.put("end", "'목적지'는 필수 값 입니다.");
