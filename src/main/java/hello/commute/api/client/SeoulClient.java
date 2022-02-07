@@ -38,7 +38,7 @@ public class SeoulClient {
 
         String uriString = UriComponentsBuilder.fromUriString(uri+stationName).build().toUriString();
 
-        URI uri = UriComponentsBuilder.fromUriString(uriString).build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString(uriString).encode().build().toUri();
 
         log.info("[request seoul-subway api] uri = {}", uri);
         //Http Entity
@@ -79,6 +79,8 @@ public class SeoulClient {
         } else if (errorTypeMap.get(code) == USER){
             throw new IllegalArgumentException(message);
         }else if (errorTypeMap.get(code) == SERVER){
+            throw new APIServerException(message);
+        }else if (errorTypeMap.get(code) == DB){
             throw new APIServerException(message);
         }
 
