@@ -1,13 +1,17 @@
 package hello.commute.api.dto;
 
 import hello.commute.api.client.OdSayClient;
+import hello.commute.api.client.SeoulClient;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Getter
 @RequiredArgsConstructor
@@ -45,6 +49,10 @@ public class SubPath {
     //실시간 도착정보
     private int arrivalMin;
     private int leftStation;
+
+    //호선 매핑
+    private Map<Integer, String> seoulSubwayIdMap;
+    private Map<Integer, String> updnLine;
 
 
     public SubPath(JSONObject eachSubPath, int index) {
@@ -90,8 +98,9 @@ public class SubPath {
         }
     }
 
+
     @Autowired
-    public void getStationIdAndRealTimeInfo(OdSayClient odSayClient) {
+    public void getStationIdAndRealTimeInfo(OdSayClient odSayClient, SeoulClient seoulClient) {
 
         if (this.trafficType == 2){
             this.stationId = odSayClient.getStationId(startName, String.valueOf(startX), String.valueOf(startY));
@@ -99,7 +108,40 @@ public class SubPath {
             SearchRealTimeStationRes realTimeBusInfo = odSayClient.getRealTimeBusStation(searchRealTimeStationReq);
             this.arrivalMin = realTimeBusInfo.getArrivalMin();
             this.leftStation = realTimeBusInfo.getLeftStation();
+        }else if(this.trafficType == 1){
+            int odsaySubwayCode = this.lane.subwayCode;
+            if (seoulSubwayIdMap.containsKey(odsaySubwayCode)){
+                //노선 id odsaty -> seoul
+                String seoulSubwayId = seoulSubwayIdMap.get(odsaySubwayCode);
+                //방면
+
+
+                JSONObject realtimeInfo = seoulClient.getRealtimeInfo(startName, seoulSubwayId, );
+                //몇분후 00방면 열차 승차.
+
+            }
         }
+    }
+
+    @PostConstruct
+    private void init(){
+        seoulSubwayIdMap = new LinkedHashMap<>();
+        seoulSubwayIdMap.put(1, "1001");
+        seoulSubwayIdMap.put(2,"1002");
+        seoulSubwayIdMap.put(3,"1003");
+        seoulSubwayIdMap.put(4,"1004");
+        seoulSubwayIdMap.put(5,"1005");
+        seoulSubwayIdMap.put(6,"1006");
+        seoulSubwayIdMap.put(7,"1007");
+        seoulSubwayIdMap.put(8,"1008");
+        seoulSubwayIdMap.put(9,"1009");
+        seoulSubwayIdMap.put(101,"1065");
+        seoulSubwayIdMap.put(104,"1063");
+        seoulSubwayIdMap.put(108,"1067");
+        seoulSubwayIdMap.put(109,"1077");
+        updnLine=new LinkedHashMap<>();
+        updnLine.put(1, "상행");
+        updnLine.put(2, "하행");
     }
 
     @Getter

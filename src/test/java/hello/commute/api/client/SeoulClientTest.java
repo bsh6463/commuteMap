@@ -16,8 +16,8 @@ class SeoulClientTest {
 
     @Test
     void request(){
-        JSONObject jsonResult = seoulClient.getRealtimeInfo("잠실");
-        System.out.println(jsonResult);
+        //JSONObject jsonResult = seoulClient.getRealtimeInfo("잠실");
+        //System.out.println(jsonResult);
 
     }
 }

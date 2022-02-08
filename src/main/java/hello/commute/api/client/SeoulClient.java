@@ -1,16 +1,17 @@
 package hello.commute.api.client;
 
+import hello.commute.api.dto.SeoulSubwayArrivalInfoRes;
 import hello.commute.api.exception.APIKeyException;
 import hello.commute.api.exception.APIServerException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.After;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -34,7 +35,7 @@ public class SeoulClient {
     private JSONObject jsonResult;
     private Map<String, ErrorType> errorTypeMap;
 
-    public JSONObject getRealtimeInfo(String stationName) {
+    public SeoulSubwayArrivalInfoRes getRealtimeInfo(String stationName, String subwayId, String updLine) {
 
         String uriString = UriComponentsBuilder.fromUriString(uri+stationName).build().toUriString();
 
@@ -60,9 +61,27 @@ public class SeoulClient {
             JSONObject errorInfo = new JSONObject(exception.getResponseBodyAsString());
             errorCheck(errorInfo);
         }
+        JSONArray arrivalList = jsonResult.getJSONArray("realtimeArrivalList");
+        for (int i=0; i<arrivalList.length(); i++) {
+            JSONObject arrival = arrivalList.getJSONObject(i);
+            if (isSameWay(subwayId, updLine, arrival)){
+                return new SeoulSubwayArrivalInfoRes((String) arrival.get("arvlMsg2"), (String) arrival.get("trainLineNm"));
+            }
 
-        return jsonResult;
+        }
 
+        throw new NoResultException("일치하는 정보가 없습니다.");
+
+    }
+
+    private boolean isSameWay(String subwayId, String updLine, JSONObject arrival) {
+        if (subwayId.equals(arrival.get("subwayId"))){
+            //같은 호선일 때 다음 역이 같아야 같은 방면임.
+            if (updLine.equals(arrival.get("updLine"))){
+                return true;
+            }
+        }
+        return false;
     }
 
     @After("seoulClient()")

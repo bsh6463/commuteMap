@@ -2,6 +2,7 @@ package hello.commute.api;
 
 import hello.commute.api.client.GoogleClient;
 import hello.commute.api.client.OdSayClient;
+import hello.commute.api.client.SeoulClient;
 import hello.commute.api.dto.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ public class ResFactory {
     private Model model;
     private GoogleClient googleClient;
     private OdSayClient odSayClient;
+    private SeoulClient seoulClient;
 
     @Autowired
     public ResFactory(SearchLocationReq searchLocationReq, Model model, GoogleClient googleClient, OdSayClient odSayClient) {
@@ -87,7 +89,7 @@ public class ResFactory {
         //2개의 path에 대해 realtime 정보를 가져옴.
         for (Path path : pathList) {
             for (SubPath subPath : path.getSubPathList()) {
-                subPath.getStationIdAndRealTimeInfo(odSayClient);
+                subPath.getStationIdAndRealTimeInfo(odSayClient, seoulClient);
             }
         }
         return pathList;
