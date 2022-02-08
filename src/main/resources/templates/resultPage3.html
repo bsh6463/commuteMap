@@ -60,9 +60,10 @@
                                         <!--span th:text="${subPath?.trafficType}?:'데이터 없음'"></span-->
                                         <li th:object="${subpath}"  th:if="${subPath?.trafficType} == 2" th:text="|${subPath?.endName}정류장 하차|">버스하차</li>
                                     </tr>
-                                    <tr>
+                                    <tr th:object="${subpath}"  th:if="${subPath?.trafficType} == 1">
                                         <!--span th:text="${subPath?.trafficType}?:'데이터 없음'"></span-->
-                                        <li th:object="${subpath}"  th:if="${subPath?.trafficType} == 1" th:text="|${subPath?.startName} ${subPath.lane.name} 승차|">지하철 승차</li>
+                                        <li th:text="|${subPath?.startName} ${subPath.lane.name} ${subPath.updnLine} 열차|">지하철 승차</li>
+                                        <b><span style="color: red" th:text="${subPath?.arrivalMessage}"> 몇 분후 도착 </span></b>
                                     </tr>
                                     <tr>
                                         <!--span th:text="${subPath?.trafficType}?:'데이터 없음'"></span-->

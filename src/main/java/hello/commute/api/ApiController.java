@@ -2,6 +2,7 @@ package hello.commute.api;
 
 import hello.commute.api.client.GoogleClient;
 import hello.commute.api.client.OdSayClient;
+import hello.commute.api.client.SeoulClient;
 import hello.commute.api.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class ApiController {
 
     private final OdSayClient odSayClient;
+    private final SeoulClient seoulClient;
     private final GoogleClient googleClient;
     Map<String, String> errors = new LinkedHashMap<>();
 
@@ -40,7 +42,7 @@ public class ApiController {
             return "searchRouteWithRealTimeInfo";
         }
 
-        ResFactory factory = new ResFactory(searchLocationReq, model, googleClient, odSayClient);
+        ResFactory factory = new ResFactory(searchLocationReq, model, googleClient, odSayClient, seoulClient);
         model = factory.getResult();
         return searchLocationReq.getMiddle().isEmpty()? "resultPage3-1":"resultPage3";
     }

@@ -1,5 +1,6 @@
 package hello.commute.api.client;
 
+import hello.commute.api.dto.SeoulSubwayArrivalInfoRes;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +17,8 @@ class SeoulClientTest {
 
     @Test
     void request(){
-        //JSONObject jsonResult = seoulClient.getRealtimeInfo("잠실");
-        //System.out.println(jsonResult);
+        SeoulSubwayArrivalInfoRes realtimeInfo = seoulClient.getRealtimeInfo("잠실", "1002", "상행");
+        System.out.println(realtimeInfo);
 
     }
 }

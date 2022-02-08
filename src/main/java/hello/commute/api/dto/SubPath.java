@@ -52,10 +52,15 @@ public class SubPath {
 
     //호선 매핑
     private Map<Integer, String> seoulSubwayIdMap;
-    private Map<Integer, String> updnLine;
+    private Map<Integer, String> updnLineMap;
+    private Map<Integer, String> updnLine2ndMap;
 
+    //지하철 도착 정보
+    private String arrivalMessage;
+    private String updnLine;
 
     public SubPath(JSONObject eachSubPath, int index) {
+        init();
         this.trafficType = (int) eachSubPath.get("trafficType");
         this.distance = (int) eachSubPath.get("distance");  //왜 double로 안들어옴?
         this.sectionTime = (int) eachSubPath.get("sectionTime");
@@ -76,11 +81,11 @@ public class SubPath {
             if (trafficType == 1){
                 //지하철의 경우에만, 방면정보
                 this.way = (String) eachSubPath.get("way");
-                if (index==0){
+                //if (index==0){
                     //지하철 첫 번 째 경로에만.waycode : 1(상행), 2(하행)
-                    this.wayCode = (int) eachSubPath.get("wayCode");
+                this.wayCode = (int) eachSubPath.get("wayCode");
 
-                }
+               // }
                 this.door = (String) eachSubPath.get("door");
             }
 
@@ -110,20 +115,25 @@ public class SubPath {
             this.leftStation = realTimeBusInfo.getLeftStation();
         }else if(this.trafficType == 1){
             int odsaySubwayCode = this.lane.subwayCode;
+
             if (seoulSubwayIdMap.containsKey(odsaySubwayCode)){
                 //노선 id odsaty -> seoul
                 String seoulSubwayId = seoulSubwayIdMap.get(odsaySubwayCode);
-                //방면
 
+                //진행방향 : 상행, 하행, 외선, 내선 확인
+                if (seoulSubwayId.equals("1002")){
+                    updnLine = updnLine2ndMap.get(wayCode);
+                }else {
+                    updnLine = updnLineMap.get(wayCode);
+                }
 
-                JSONObject realtimeInfo = seoulClient.getRealtimeInfo(startName, seoulSubwayId, );
-                //몇분후 00방면 열차 승차.
-
+                SeoulSubwayArrivalInfoRes arrivalInfoRes = seoulClient.getRealtimeInfo(startName, seoulSubwayId, updnLine);
+                this.arrivalMessage = arrivalInfoRes.getArrivalMessage();
             }
         }
     }
 
-    @PostConstruct
+
     private void init(){
         seoulSubwayIdMap = new LinkedHashMap<>();
         seoulSubwayIdMap.put(1, "1001");
@@ -139,9 +149,12 @@ public class SubPath {
         seoulSubwayIdMap.put(104,"1063");
         seoulSubwayIdMap.put(108,"1067");
         seoulSubwayIdMap.put(109,"1077");
-        updnLine=new LinkedHashMap<>();
-        updnLine.put(1, "상행");
-        updnLine.put(2, "하행");
+        updnLineMap =new LinkedHashMap<>();
+        updnLineMap.put(1, "상행");
+        updnLineMap.put(2, "하행");
+        updnLine2ndMap = new LinkedHashMap<>();
+        updnLine2ndMap.put(1, "외선");
+        updnLine2ndMap.put(2, "내선");
     }
 
     @Getter

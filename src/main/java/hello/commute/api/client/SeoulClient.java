@@ -3,6 +3,7 @@ package hello.commute.api.client;
 import hello.commute.api.dto.SeoulSubwayArrivalInfoRes;
 import hello.commute.api.exception.APIKeyException;
 import hello.commute.api.exception.APIServerException;
+import hello.commute.api.exception.EndOfServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.After;
 import org.json.JSONArray;
@@ -52,10 +53,9 @@ public class SeoulClient {
                     uri, HttpMethod.GET, httpEntity, responseType
             );
             jsonResult = new JSONObject(responseEntity.getBody());
-            int status = (int) jsonResult.getJSONObject("errorMessage").get("status");
-            if (status!=200){
-                errorCheck(jsonResult);
-            }
+
+            errorCheck(jsonResult);
+
         }catch (HttpClientErrorException.BadRequest | HttpServerErrorException.InternalServerError exception){
             log.info("[Google Client] Exception 발생: {}", exception.getMessage());
             JSONObject errorInfo = new JSONObject(exception.getResponseBodyAsString());
@@ -70,7 +70,7 @@ public class SeoulClient {
 
         }
 
-        throw new NoResultException("일치하는 정보가 없습니다.");
+        return new SeoulSubwayArrivalInfoRes("요청하신 방향으로 운행이 종료되었습니다.", updLine);
 
     }
 
@@ -84,11 +84,20 @@ public class SeoulClient {
         return false;
     }
 
-    @After("seoulClient()")
     private void errorCheck(JSONObject jsonResult) {
-        JSONObject jsonErrorMessageObject = jsonResult.getJSONObject("errorMessage");
-        String code = (String) jsonErrorMessageObject.get("code");
-        String message = (String) jsonErrorMessageObject.get("message");
+        int status=0;
+        String code="";
+        String message="";
+
+        if (!jsonResult.isNull("errorMessage")){
+            JSONObject jsonErrorMessageObject = jsonResult.getJSONObject("errorMessage");
+            code = (String) jsonErrorMessageObject.get("code");
+            message = (String) jsonErrorMessageObject.get("message");
+        }else {
+            code = (String) jsonResult.get("code");
+            message = (String) jsonResult.get("message");
+        }
+
         log.info("[SeoulClient] Error code: {}", code);
         log.info("[SeoulClient] Error Message: {}", message);
         if (errorTypeMap.get(code) == INVALID_KEY){
@@ -104,6 +113,7 @@ public class SeoulClient {
         }
 
     }
+
 
 
     @PostConstruct

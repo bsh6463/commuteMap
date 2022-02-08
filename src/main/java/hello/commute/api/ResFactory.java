@@ -20,11 +20,12 @@ public class ResFactory {
     private SeoulClient seoulClient;
 
     @Autowired
-    public ResFactory(SearchLocationReq searchLocationReq, Model model, GoogleClient googleClient, OdSayClient odSayClient) {
+    public ResFactory(SearchLocationReq searchLocationReq, Model model, GoogleClient googleClient, OdSayClient odSayClient, SeoulClient seoulClient) {
         this.searchLocationReq = searchLocationReq;
         this.model = model;
         this.googleClient = googleClient;
         this.odSayClient = odSayClient;
+        this.seoulClient = seoulClient;
     }
 
     public Model getResult(){
