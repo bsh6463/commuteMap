@@ -172,6 +172,21 @@ public class OdSayClient {
         }
     }
 
+    private void errorMessageType2(JSONObject jsonResult) {
+
+        if (!jsonResult.getJSONObject("result").isNull("error")){
+            JSONObject abnormalErrorInfo = jsonResult.getJSONObject("result").getJSONObject("error");
+            message = (String) abnormalErrorInfo.get("msg");
+            errorCode = (String) abnormalErrorInfo.get("code");
+            log.info("[ODsay Error] errorCode: {}", errorCode);
+            log.info("[ODsay Error] errorMessage: {}", message);
+            if(errorCode.equals("null")){
+                throw new APIServerException(message);
+            }else {
+                throw new IllegalArgumentException(message);
+            }
+        }
+    }
     private void getErrorCodeAndMessage(JSONObject jsonErrorInfo) {
         errorCode = (String) jsonErrorInfo.get("code");
         message = (String) jsonErrorInfo.get("message");
@@ -190,22 +205,6 @@ public class OdSayClient {
             throw new TooCloseException(message);
         }else if (errorType == NO_DATA){
             throw new NoResultException(message);
-        }
-    }
-
-    private void errorMessageType2(JSONObject jsonResult) {
-
-        if (!jsonResult.getJSONObject("result").isNull("error")){
-            JSONObject abnormalErrorInfo = jsonResult.getJSONObject("result").getJSONObject("error");
-            message = (String) abnormalErrorInfo.get("msg");
-            errorCode = (String) abnormalErrorInfo.get("code");
-            log.info("[ODsay Error] errorCode: {}", errorCode);
-            log.info("[ODsay Error] errorMessage: {}", message);
-            if(errorCode.equals("null")){
-                throw new APIServerException(message);
-            }else {
-                throw new IllegalArgumentException(message);
-            }
         }
     }
 
