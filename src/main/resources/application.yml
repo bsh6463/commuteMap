@@ -10,7 +10,7 @@ google:
   key: AIzaSyDI5ze-G_qR4uril-uYFwvFSH56UVSUqxk
 
 seoul:
-  uri: http://swopenAPI.seoul.go.kr/api/subway/634d57594162736837397a416d5656/json/realtimeStationArrival/0/2/
+  uri: http://swopenAPI.seoul.go.kr/api/subway/634d57594162736837397a416d5656/json/realtimeStationArrival/0/10/
 
 spring:
   datasource:

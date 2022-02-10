@@ -36,7 +36,7 @@ public class SeoulClient {
     private JSONObject jsonResult;
     private Map<String, ErrorType> errorTypeMap;
 
-    public SeoulSubwayArrivalInfoRes getRealtimeInfo(String stationName, String subwayId, String updLine) {
+    public SeoulSubwayArrivalInfoRes getRealtimeInfo(String stationName, String subwayId, String updnLine) {
 
         String uriString = UriComponentsBuilder.fromUriString(uri+stationName).build().toUriString();
 
@@ -54,30 +54,32 @@ public class SeoulClient {
             );
             jsonResult = new JSONObject(responseEntity.getBody());
 
+            log.info("[SeoulClient] Station Name: {}", stationName);
             errorCheck(jsonResult);
 
         }catch (HttpClientErrorException.BadRequest | HttpServerErrorException.InternalServerError exception){
             log.info("[Google Client] Exception 발생: {}", exception.getMessage());
             JSONObject errorInfo = new JSONObject(exception.getResponseBodyAsString());
+
             errorCheck(errorInfo);
         }
         JSONArray arrivalList = jsonResult.getJSONArray("realtimeArrivalList");
         for (int i=0; i<arrivalList.length(); i++) {
             JSONObject arrival = arrivalList.getJSONObject(i);
-            if (isSameWay(subwayId, updLine, arrival)){
+            if (isSameWay(subwayId, updnLine, arrival)){
                 return new SeoulSubwayArrivalInfoRes((String) arrival.get("arvlMsg2"), (String) arrival.get("trainLineNm"));
             }
 
         }
 
-        return new SeoulSubwayArrivalInfoRes("요청하신 방향으로 운행이 종료되었습니다.", updLine);
+        return new SeoulSubwayArrivalInfoRes("요청하신 방향으로 운행이 종료되었습니다.", updnLine);
 
     }
 
-    private boolean isSameWay(String subwayId, String updLine, JSONObject arrival) {
+    private boolean isSameWay(String subwayId, String updnLine, JSONObject arrival) {
         if (subwayId.equals(arrival.get("subwayId"))){
             //같은 호선일 때 다음 역이 같아야 같은 방면임.
-            if (updLine.equals(arrival.get("updLine"))){
+            if (updnLine.equals(arrival.get("updnLine"))){
                 return true;
             }
         }

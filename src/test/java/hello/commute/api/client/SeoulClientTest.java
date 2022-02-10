@@ -17,8 +17,8 @@ class SeoulClientTest {
 
     @Test
     void request(){
-        SeoulSubwayArrivalInfoRes realtimeInfo = seoulClient.getRealtimeInfo("잠실", "1002", "상행");
-        System.out.println(realtimeInfo);
+        SeoulSubwayArrivalInfoRes realtimeInfo = seoulClient.getRealtimeInfo("잠실", "1002", "외선");
+        System.out.println(realtimeInfo.getArrivalMessage());
 
     }
 }

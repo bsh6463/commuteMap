@@ -8,7 +8,7 @@
 <body>
 <H1><b>길찾기 검색 결과</b></H1>
 
-<div id="summary">
+<div id="summary" style="max-width: 600px">
     <table class="table table-striped" >
         <tr>
             <td>출발지</td>
@@ -25,7 +25,7 @@
     </table>
 </div>
 
-<div class="paths">
+<div class="paths" style="max-width: 600px">
     <th:block th:each="path1:${result1.pathList}">
             <div class="accordion accordion-flush" id="accordionFlushExample">
                 <div class="accordion-item">
