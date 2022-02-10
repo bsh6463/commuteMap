@@ -22,6 +22,7 @@ public class OdsayError {
         errorMap.put("6", "서비스 지역이 아닙니다.");
         errorMap.put("-98", "출,도착지가 700m 이내 입니다.");
         errorMap.put("-99", "검색결과가 없습니다.");
+        errorMap.put("-11", "검색결과가 없습니다.");
 
 
     }

@@ -7,6 +7,8 @@ public enum ErrorType {
     DB,
     INVALID_KEY,
     NO_DATA,
-    OK
+    OK,
+    OUT_OF_SERVICE_AREA,
+    CLOSE
 
 }

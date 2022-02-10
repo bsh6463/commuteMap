@@ -3,6 +3,9 @@ package hello.commute.api.client;
 import hello.commute.api.dto.SearchRealTimeStationReq;
 import hello.commute.api.dto.SearchRealTimeStationRes;
 import hello.commute.api.dto.SearchRouteReq;
+import hello.commute.api.exception.APIServerException;
+import hello.commute.api.exception.OutOfServiceException;
+import hello.commute.api.exception.TooCloseException;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,9 +18,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.PostConstruct;
+import javax.persistence.NoResultException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static hello.commute.api.client.ErrorType.*;
 
 @Slf4j
 @Component
@@ -41,6 +50,8 @@ public class OdSayClient {
     private static int callCount;
     private String message;
     private String errorCode;
+
+    private Map<String, ErrorType>errorTypeMap;
 
    public JSONObject searchRoute(SearchRouteReq searchRouteReq){
         log.info("callCount : {}", ++callCount);
@@ -146,22 +157,39 @@ public class OdSayClient {
         if (!jsonResult.isNull("error")){
 
             if (jsonResult.getJSONArray("error").isEmpty()){
-                log.info("[ODsay Error] errorCode: 500");
-                throw new IllegalStateException("예상치 못한 에러가 발생했습니다.");
+                JSONObject jsonErrorInfo = jsonResult.getJSONArray("error").getJSONObject(0);
+                getErrorCodeAndMessage(jsonErrorInfo);
+                exceptionSelect(errorTypeMap.get(errorCode));
             }
             JSONArray jsonErrorArray = jsonResult.getJSONArray("error");
             for (int i=0; i<jsonErrorArray.length(); i++){
                 JSONObject jsonErrorInfo = jsonErrorArray.getJSONObject(0);
-                errorCode = (String) jsonErrorInfo.get("code");
-                message = (String) jsonErrorInfo.get("message");
-                log.info("[ODsay Error] errorCode: {}", errorCode);
-                log.info("[ODsay Error] errorMessage: {}", message);
-
-                if (errorCode.equals("500") ||errorCode.equals("-1")){
-                    throw new IllegalStateException(message);
-                }
+                getErrorCodeAndMessage(jsonErrorInfo);
+                ErrorType errorType = errorTypeMap.get(errorCode);
+                exceptionSelect(errorType);
             }
-                throw new IllegalArgumentException(message);
+                throw new IllegalStateException(message);
+        }
+    }
+
+    private void getErrorCodeAndMessage(JSONObject jsonErrorInfo) {
+        errorCode = (String) jsonErrorInfo.get("code");
+        message = (String) jsonErrorInfo.get("message");
+        log.info("[ODsay Error] errorCode: {}", errorCode);
+        log.info("[ODsay Error] errorMessage: {}", message);
+    }
+
+    private void exceptionSelect(ErrorType errorType) {
+        if (errorType == USER){
+            throw new IllegalArgumentException(message);
+        }else if (errorType == SERVER){
+            throw new APIServerException(message);
+        }else if (errorType == OUT_OF_SERVICE_AREA){
+            throw new OutOfServiceException(message);
+        }else if (errorType == CLOSE){
+            throw new TooCloseException(message);
+        }else if (errorType == NO_DATA){
+            throw new NoResultException(message);
         }
     }
 
@@ -174,10 +202,27 @@ public class OdSayClient {
             log.info("[ODsay Error] errorCode: {}", errorCode);
             log.info("[ODsay Error] errorMessage: {}", message);
             if(errorCode.equals("null")){
-                throw new IllegalStateException(message);
+                throw new APIServerException(message);
             }else {
                 throw new IllegalArgumentException(message);
             }
         }
+    }
+
+
+    @PostConstruct
+    private void setErrorType(){
+        errorTypeMap = new LinkedHashMap<>();
+        errorTypeMap.put("500", SERVER);
+        errorTypeMap.put("-8", USER);
+        errorTypeMap.put("-9", USER);
+        errorTypeMap.put("3", USER);
+        errorTypeMap.put("4", USER);
+        errorTypeMap.put("5", USER);
+        errorTypeMap.put("6", OUT_OF_SERVICE_AREA);
+        errorTypeMap.put("-98", CLOSE);
+        errorTypeMap.put("-99", NO_DATA);
+        errorTypeMap.put("-11", NO_DATA);
+
     }
 }
