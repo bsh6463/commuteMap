@@ -9,6 +9,7 @@ public enum ErrorType {
     NO_DATA,
     OK,
     OUT_OF_SERVICE_AREA,
-    CLOSE
+    CLOSE,
+
 
 }

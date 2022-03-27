@@ -36,8 +36,9 @@ public class SeoulClient {
     private JSONObject jsonResult;
     private Map<String, ErrorType> errorTypeMap;
 
-    public SeoulSubwayArrivalInfoRes getRealtimeInfo(String stationName, String subwayId, String updnLine) {
 
+    public SeoulSubwayArrivalInfoRes getRealtimeInfo(String stationName, String subwayId, String updnLine) {
+        stationName= stationName.replace("역", "");
         String uriString = UriComponentsBuilder.fromUriString(uri+stationName).build().toUriString();
 
         URI uri = UriComponentsBuilder.fromUriString(uriString).encode().build().toUri();

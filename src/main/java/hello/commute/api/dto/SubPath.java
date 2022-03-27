@@ -2,6 +2,8 @@ package hello.commute.api.dto;
 
 import hello.commute.api.client.OdSayClient;
 import hello.commute.api.client.SeoulClient;
+import hello.commute.api.exception.EndOfServiceException;
+import hello.commute.api.exception.OutOfServiceException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -127,8 +130,12 @@ public class SubPath {
                     updnLine = updnLineMap.get(wayCode);
                 }
 
-                SeoulSubwayArrivalInfoRes arrivalInfoRes = seoulClient.getRealtimeInfo(startName, seoulSubwayId, updnLine);
-                this.arrivalMessage = arrivalInfoRes.getArrivalMessage();
+                try{
+                    SeoulSubwayArrivalInfoRes arrivalInfoRes = seoulClient.getRealtimeInfo(startName, seoulSubwayId, updnLine);
+                    this.arrivalMessage = arrivalInfoRes.getArrivalMessage();
+                }catch (NoResultException | OutOfServiceException | EndOfServiceException e){
+                    arrivalMessage = e.getMessage();
+                }
             }
         }
     }

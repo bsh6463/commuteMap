@@ -42,7 +42,9 @@ public class ApiController {
             return "searchRouteWithRealTimeInfo";
         }
 
+
         ResFactory factory = new ResFactory(searchLocationReq, model, googleClient, odSayClient, seoulClient);
+
         model = factory.getResult();
         return searchLocationReq.getMiddle().isEmpty()? "resultPage3-1":"resultPage3";
     }

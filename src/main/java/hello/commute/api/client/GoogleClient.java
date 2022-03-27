@@ -1,5 +1,6 @@
 package hello.commute.api.client;
 
+import hello.commute.api.exception.APIServerException;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,7 +70,7 @@ public class GoogleClient {
             String errorMessage = (String) jsonResult.get("error_message");
             log.info("[Google Client Error] Status: {}", status);
             log.info("[Google Client Error] errorMessage: {}", errorMessage);
-            throw new IllegalStateException(errorMessage);
+            throw new APIServerException(errorMessage);
         }else if (status.equals("ZERO_RESULTS")){
             log.info("[Google Client Error] Status: {}", status);
             throw new NoResultException("결과가 없습니다.");

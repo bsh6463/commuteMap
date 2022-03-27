@@ -156,12 +156,18 @@ public class OdSayClient {
         //error체크
         if (!jsonResult.isNull("error")){
 
-            if (jsonResult.getJSONArray("error").isEmpty()){
+            if (jsonResult.getJSONObject("error").getClass().isNestmateOf(JSONObject.class)){
+                JSONObject errorObject = jsonResult.getJSONObject("error");
+                String message = (String) errorObject.get("msg");
+                errorCode = (String) errorObject.get("code");
+                exceptionSelect(errorTypeMap.get(errorCode));
+            }else if (jsonResult.getJSONArray("error").isEmpty()){
                 JSONObject jsonErrorInfo = jsonResult.getJSONArray("error").getJSONObject(0);
                 getErrorCodeAndMessage(jsonErrorInfo);
                 exceptionSelect(errorTypeMap.get(errorCode));
             }
             JSONArray jsonErrorArray = jsonResult.getJSONArray("error");
+
             for (int i=0; i<jsonErrorArray.length(); i++){
                 JSONObject jsonErrorInfo = jsonErrorArray.getJSONObject(0);
                 getErrorCodeAndMessage(jsonErrorInfo);
@@ -178,12 +184,13 @@ public class OdSayClient {
             JSONObject abnormalErrorInfo = jsonResult.getJSONObject("result").getJSONObject("error");
             message = (String) abnormalErrorInfo.get("msg");
             errorCode = (String) abnormalErrorInfo.get("code");
+            ErrorType errorType = errorTypeMap.get(errorCode);
             log.info("[ODsay Error] errorCode: {}", errorCode);
             log.info("[ODsay Error] errorMessage: {}", message);
             if(errorCode.equals("null")){
                 throw new APIServerException(message);
             }else {
-                throw new IllegalArgumentException(message);
+                exceptionSelect(errorType);
             }
         }
     }
@@ -221,7 +228,7 @@ public class OdSayClient {
         errorTypeMap.put("6", OUT_OF_SERVICE_AREA);
         errorTypeMap.put("-98", CLOSE);
         errorTypeMap.put("-99", NO_DATA);
-        errorTypeMap.put("-11", NO_DATA);
+        errorTypeMap.put("-11", OUT_OF_SERVICE_AREA);
 
     }
 }
