@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ResFactory {
 
@@ -27,6 +28,15 @@ public class ResFactory {
         this.odSayClient = odSayClient;
         this.seoulClient = seoulClient;
     }
+
+    @Autowired
+    public ResFactory(SearchLocationReq searchLocationReq,  GoogleClient googleClient, OdSayClient odSayClient, SeoulClient seoulClient) {
+        this.searchLocationReq = searchLocationReq;
+        this.googleClient = googleClient;
+        this.odSayClient = odSayClient;
+        this.seoulClient = seoulClient;
+    }
+
 
     public Model getResult(){
         //이름 --> 좌표
@@ -56,6 +66,41 @@ public class ResFactory {
         model.addAttribute("end", searchLocationReq.getEnd());
 
         return model;
+    }
+
+    public JSONObject getJsonResult(){
+        JSONObject result = new JSONObject();
+
+        //이름 --> 좌표
+        JSONObject jsonStartResult = googleClient.searchLocation(searchLocationReq.getStart());
+        JSONObject jsonEndResult = googleClient.searchLocation(searchLocationReq.getEnd());
+
+        SearchRouteRes searchRouteRes1;
+
+        if (!searchLocationReq.getMiddle().isEmpty()){
+            JSONObject jsonMiddleResult = googleClient.searchLocation(searchLocationReq.getMiddle());
+            //시작 -> 경유, 경유 -> 시작 길찾기 req 객체 생성
+            SearchRouteReq searchRouteReq1 = getSearchRouteReq(jsonStartResult, jsonMiddleResult);
+            SearchRouteReq searchRouteReq2 = getSearchRouteReq(jsonMiddleResult, jsonEndResult);
+            searchRouteRes1 = searchRoute3(searchRouteReq1);
+            SearchRouteRes searchRouteRes2 = searchRoute3(searchRouteReq2);
+
+           // model.addAttribute();
+           // model.addAttribute());
+
+            result.put("result2", searchRouteRes2);
+            result.put("middle", searchLocationReq.getMiddle());
+        }else {
+            SearchRouteReq searchRouteReq1 = getSearchRouteReq(jsonStartResult, jsonEndResult);
+            searchRouteRes1 = searchRoute3(searchRouteReq1);
+        }
+
+        result.put("result1", searchRouteRes1.getResult());
+        result.put("start", searchLocationReq.getStart());
+        result.put("end", searchLocationReq.getEnd());
+
+
+        return result;
     }
 
     private SearchRouteReq getSearchRouteReq(JSONObject jsonStartResult, JSONObject jsonEndResult) {
