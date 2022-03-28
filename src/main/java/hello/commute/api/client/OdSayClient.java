@@ -156,6 +156,13 @@ public class OdSayClient {
         //error체크
         if (!jsonResult.isNull("error")){
 
+            /*
+            if (jsonResult.getJSONArray("error")!= null){
+                JSONObject errorObject = (JSONObject) jsonResult.getJSONArray("error").get(0);
+                errorCode = (String) errorObject.get("code");
+                exceptionSelect(errorTypeMap.get(errorCode));
+            }*/
+
             if (jsonResult.getJSONObject("error").getClass().isNestmateOf(JSONObject.class)){
                 JSONObject errorObject = jsonResult.getJSONObject("error");
                 String message = (String) errorObject.get("msg");
