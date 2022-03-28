@@ -1,7 +1,7 @@
 
 odsay:
   uri: https://api.odsay.com/v1/api/searchPubTransPathT
-  key: 	PGoTBdvmQu6iIlDehYKN3w
+  key: PGoTBdvmQu6iIlDehYKN3w
   arsId: https://api.odsay.com/v1/api/searchStation
   realTimeStation: https://api.odsay.com/v1/api/realtimeStation
 
