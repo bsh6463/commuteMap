@@ -39,6 +39,6 @@ test {
 jar {
     enabled = false
     manifest {
-        attributes('Main-Class': 'hello.blog.BlogApplication')
+        attributes('Main-Class': 'hello.commute.CommuteApplication')
     }
 }
