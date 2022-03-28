@@ -29,4 +29,5 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
 server:
-  port: 8090
+  port: "${port:8090}"
+  forward-headers-strategy: native
