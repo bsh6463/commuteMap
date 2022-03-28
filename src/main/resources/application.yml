@@ -14,9 +14,10 @@ seoul:
 
 spring:
   datasource:
-    url: jdbc:h2:mysql://localhost:3306/commuteMap
-    username: root
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://b3d4b9c35f2113:eaf67f3d@us-cdbr-east-05.cleardb.net/heroku_0bc136b96aad996?reconnect=true
+    username: b3d4b9c35f2113
+    password: eaf67f3
     initialization-mode: always
 
   jpa:
