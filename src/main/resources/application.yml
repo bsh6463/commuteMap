@@ -14,11 +14,9 @@ seoul:
 
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://b3d4b9c35f2113:eaf67f3d@us-cdbr-east-05.cleardb.net/heroku_0bc136b96aad996?reconnect=true
-    username: b3d4b9c35f2113
-    password: eaf67f3
-    initialization-mode: always
+    url: jdbc:mysql://commute-map.cpzzz73ewjdq.ap-northeast-2.rds.amazonaws.com:3306/commuteMapDB
+    username: bsh6463
+    password: bae930224!
 
   jpa:
     hibernate:
