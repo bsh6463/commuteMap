@@ -88,7 +88,7 @@ public class ResFactory {
            // model.addAttribute();
            // model.addAttribute());
 
-            result.put("result2", searchRouteRes2);
+            result.put("result2", searchRouteRes2.getResult());
             result.put("middle", searchLocationReq.getMiddle());
         }else {
             SearchRouteReq searchRouteReq1 = getSearchRouteReq(jsonStartResult, jsonEndResult);
