@@ -88,14 +88,24 @@ public class ResFactory {
            // model.addAttribute();
            // model.addAttribute());
 
-            result.put("result2", searchRouteRes2.getResult());
+            //get Result빼야함
+            JSONObject result2 = new JSONObject();
+            result2.put("pathList", searchRouteRes2.getPathList());
+            result2.put("distance", searchRouteRes2.getPointDistance());
+
+            result.put("result2", result2);
             result.put("middle", searchLocationReq.getMiddle());
         }else {
             SearchRouteReq searchRouteReq1 = getSearchRouteReq(jsonStartResult, jsonEndResult);
             searchRouteRes1 = searchRoute3(searchRouteReq1);
         }
 
-        result.put("result1", searchRouteRes1.getResult());
+        //get Result빼야함
+        JSONObject result1 = new JSONObject();
+        result1.put("pathList", searchRouteRes1.getPathList());
+        result1.put("distance", searchRouteRes1.getPointDistance());
+
+        result.put("result1", result1);
         result.put("start", searchLocationReq.getStart());
         result.put("end", searchLocationReq.getEnd());
 
