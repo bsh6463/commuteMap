@@ -4,13 +4,13 @@ import hello.commute.api.client.GoogleClient;
 import hello.commute.api.client.OdSayClient;
 import hello.commute.api.client.SeoulClient;
 import hello.commute.api.dto.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class ResFactory {
 
@@ -89,8 +89,9 @@ public class ResFactory {
            // model.addAttribute());
 
             //get Result빼야함
+            
             JSONObject result2 = new JSONObject();
-            result2.put("pathList", searchRouteRes2.getPathList());
+            result2.put("pathList", getPaths(searchRouteRes2));
             result2.put("distance", searchRouteRes2.getPointDistance());
 
             result.put("result2", result2);
@@ -100,9 +101,8 @@ public class ResFactory {
             searchRouteRes1 = searchRoute3(searchRouteReq1);
         }
 
-        //get Result빼야함
         JSONObject result1 = new JSONObject();
-        result1.put("pathList", searchRouteRes1.getPathList());
+        result1.put("pathList",getPaths(searchRouteRes1));
         result1.put("distance", searchRouteRes1.getPointDistance());
 
         result.put("result1", result1);
@@ -112,6 +112,7 @@ public class ResFactory {
 
         return result;
     }
+
 
     private SearchRouteReq getSearchRouteReq(JSONObject jsonStartResult, JSONObject jsonEndResult) {
         double SX = (double) jsonStartResult.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lng");
@@ -151,5 +152,18 @@ public class ResFactory {
         return pathList;
     }
 
+    private JSONArray getPaths(SearchRouteRes searchRouteRes) {
+        ArrayList<Path> pathList = new ArrayList<>();
+        for (Path path :searchRouteRes.getPathList()) {
+            path.setInfo(null);
+            for (SubPath subPath : path.getSubPathList()) {
+                //subPath.setLaneJson(null);
+                subPath.setLaneJasonArray(null);
+            }
+        }
+        pathList.add(searchRouteRes.getPathList().get(0));
+        pathList.add(searchRouteRes.getPathList().get(1));
+        return new JSONArray(pathList);
+    }
 
 }

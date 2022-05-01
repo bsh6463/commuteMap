@@ -4,6 +4,7 @@ import hello.commute.api.client.OdSayClient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,6 +17,7 @@ public class Path {
 
     private int pathType;
 
+    @Setter
     private JSONObject info;
     private double trafficDistance;
     private int totalWalk;

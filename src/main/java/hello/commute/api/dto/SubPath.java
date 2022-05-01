@@ -6,6 +6,7 @@ import hello.commute.api.exception.EndOfServiceException;
 import hello.commute.api.exception.OutOfServiceException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,10 @@ public class SubPath {
     //trafficType = 1 -> 지하철
     //trafficType = 2 -> 버스
     private int stationCount;
+
+    @Setter
     private JSONArray laneJasonArray;
+    @Setter
     private JSONObject laneJson;
     private Lane lane;
     private String startName;
